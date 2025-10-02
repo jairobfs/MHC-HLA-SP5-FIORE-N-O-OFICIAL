@@ -353,6 +353,151 @@
         .lab-slide.active {
             opacity: 1;
         }
+        
+        /* New styles for improved antigen journey */
+        .antigen-pathway {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+        }
+        
+        .organelle {
+            position: absolute;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .organelle:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .pathway-step {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+        
+        .pathway-step:hover {
+            transform: scale(1.2);
+        }
+        
+        .pathway-line {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+            transform-origin: left center;
+            z-index: 1;
+        }
+        
+        .pathway-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid var(--primary-blue);
+            z-index: 2;
+        }
+        
+        .pathway-description {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 200px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .pathway-step.active .pathway-description {
+            opacity: 1;
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 768px) {
+            .antigen-pathway {
+                height: 700px;
+            }
+            
+            .organelle {
+                font-size: 0.8rem;
+            }
+            
+            .pathway-step {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Improved animations */
+        @keyframes molecule-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .molecule-rotate {
+            animation: molecule-rotate 20s linear infinite;
+        }
+        
+        /* Enhanced tooltips */
+        .enhanced-tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #3b82f6;
+            cursor: help;
+        }
+        
+        .enhanced-tooltip .enhanced-tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .enhanced-tooltip .enhanced-tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        
+        .enhanced-tooltip:hover .enhanced-tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="text-slate-700">
@@ -471,6 +616,29 @@
                         </div>
                     </div>
                     <p class="mt-4 text-slate-600 text-center">Passe o mouse sobre os componentes para entender suas funções</p>
+                </div>
+                
+                <!-- Novo: Mnemônicos Rápidos -->
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl shadow-lg border border-blue-200">
+                    <h3 class="text-xl font-bold text-center mb-4 text-blue-700">Mnemônicos Rápidos para MHC/HLA</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500">
+                            <h4 class="font-bold text-blue-600 mb-2"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>MHC I vs MHC II</h4>
+                            <p><b>1 x 8 = 8</b> (MHC I + CD8) | <b>2 x 4 = 8</b> (MHC II + CD4)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500">
+                            <h4 class="font-bold text-green-600 mb-2"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Origem do Antígeno</h4>
+                            <p><b>I</b>nside → MHC <b>I</b> | <b>E</b>xterno → MHC <b>II</b> (II parece um E)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-purple-500">
+                            <h4 class="font-bold text-purple-600 mb-2"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Loci HLA Classe I</h4>
+                            <p><b>B</b>olo de <b>A</b>niversário de <b>C</b>ereja → HLA-<b>B</b>, <b>A</b>, <b>C</b></p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500">
+                            <h4 class="font-bold text-red-600 mb-2"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Loci HLA Classe II</h4>
+                            <p><b>DR</b>agão come <b>D</b>oce de <b>Q</b>uiabo no <b>P</b>iquenique → <b>DR</b>, <b>DQ</b>, <b>DP</b></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -597,85 +765,294 @@
                         </table>
                     </div>
                 </div>
+                
+                <!-- Novo: Mnemônicos para Estrutura -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-lg mt-8 border border-blue-200">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-700"><i class="fas fa-brain mr-2"></i>Mnemônicos para Estrutura Molecular</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <h4 class="font-bold text-blue-600 mb-2">MHC Classe I</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><b>1 cadeia pesada</b> + <b>1 leve</b> (β2-microglobulina)</li>
+                                <li>Peptídeos <b>curtos</b> (8-10 aa) - "Pão de cachorro-quente"</li>
+                                <li>Apresenta para <b>CD8+</b> - "1 x 8 = 8"</li>
+                                <li>Presente em <b>todas</b> as células nucleadas</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <h4 class="font-bold text-green-600 mb-2">MHC Classe II</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><b>2 cadeias</b> (α e β) de tamanho similar</li>
+                                <li>Peptídeos <b>longos</b> (13-18 aa) - "Sanduíche aberto"</li>
+                                <li>Apresenta para <b>CD4+</b> - "2 x 4 = 8"</li>
+                                <li>Presente apenas em <b>APCs</b> profissionais</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </section>
 
-            <!-- Seção Vias de Apresentação -->
+            <!-- Seção Vias de Apresentação - COMPLETAMENTE REVISADA E MELHORADA -->
             <section id="vias" class="mb-20 fade-in-section">
-                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Jornada do Antígeno: Um Tour Celular</h2>
-                 <p class="mb-8 text-lg text-slate-600 leading-relaxed">Siga a jornada de um antígeno desde sua origem até sua apresentação na superfície celular. Esta simulação ilustra o <span class="highlight-green">tráfego intracelular</span> e a maquinaria envolvida em cada via. Use os botões para navegar passo a passo pela simulação.</p>
-                 <div class="bg-white rounded-xl shadow-2xl border border-slate-100 p-4 md:p-8">
-                    <div class="flex justify-center border-b-2 mb-4">
-                        <button id="tab-endo" class="tab-btn p-4 font-semibold text-lg flex-1 text-center transition-colors active">Via Endógena (Classe I)</button>
-                        <button id="tab-exo" class="tab-btn p-4 font-semibold text-lg flex-1 text-center transition-colors">Via Exógena (Classe II)</button>
-                    </div>
-                    <div id="simulation-container" class="relative w-full h-[500px] bg-sky-50 rounded-lg overflow-hidden border-2 border-sky-100">
+                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Jornada do Antígeno: Um Tour Celular Completo</h2>
+                 <p class="mb-8 text-lg text-slate-600 leading-relaxed">Siga a jornada completa de um antígeno desde sua origem até sua apresentação na superfície celular. Esta simulação detalhada ilustra o <span class="highlight-green">tráfego intracelular</span> e toda a maquinaria molecular envolvida em cada via. Use os controles para navegar passo a passo pela simulação ou explore livremente clicando nos elementos.</p>
+                 
+                 <!-- Controles de Navegação -->
+                 <div class="flex flex-wrap justify-center gap-4 mb-6">
+                    <button id="tab-endo" class="tab-btn px-6 py-3 font-semibold text-lg flex-1 text-center transition-colors active bg-blue-100 text-blue-700 rounded-lg">
+                        <i class="fas fa-virus mr-2"></i>Via Endógena (Classe I)
+                    </button>
+                    <button id="tab-exo" class="tab-btn px-6 py-3 font-semibold text-lg flex-1 text-center transition-colors bg-green-100 text-green-700 rounded-lg">
+                        <i class="fas fa-bacterium mr-2"></i>Via Exógena (Classe II)
+                    </button>
+                    <button id="tab-cruzada" class="tab-btn px-6 py-3 font-semibold text-lg flex-1 text-center transition-colors bg-purple-100 text-purple-700 rounded-lg">
+                        <i class="fas fa-exchange-alt mr-2"></i>Via Cruzada
+                    </button>
+                 </div>
+                 
+                 <!-- Área de Simulação Principal -->
+                 <div class="bg-white rounded-xl shadow-2xl border border-slate-100 p-4 md:p-8 mb-6">
+                    <div class="antigen-pathway bg-sky-50 rounded-lg border-2 border-sky-100 relative">
                         <!-- Organelas -->
-                        <div class="absolute w-2/3 h-2/3 bg-indigo-100 rounded-xl top-1/4 left-[16.67%] has-tooltip relative">
-                            <span class="absolute top-2 left-2 font-bold text-indigo-800">Retículo Endoplasmático</span>
+                        <div class="organelle bg-indigo-100 w-48 h-32 top-8 left-8 border-2 border-indigo-300 has-tooltip relative" data-popup="re">
+                            <span class="font-bold text-indigo-800 text-center">Retículo Endoplasmático</span>
                             <span class="custom-tooltip">Organela onde ocorre a síntese de proteínas e o processamento inicial de moléculas de MHC</span>
                         </div>
-                        <div class="absolute w-1/4 h-1/4 bg-yellow-100 rounded-full top-1/2 -translate-y-1/2 left-4 has-tooltip relative">
-                            <span class="absolute top-2 left-2 font-bold text-yellow-800">Fagossomo</span>
+                        
+                        <div class="organelle bg-yellow-100 w-40 h-40 top-40 left-12 rounded-full border-2 border-yellow-300 has-tooltip relative" data-popup="fagossomo">
+                            <span class="font-bold text-yellow-800 text-center">Fagossomo</span>
                             <span class="custom-tooltip">Vesícula formada pela internalização de partículas externas por fagocitose</span>
                         </div>
-                        <div class="absolute w-1/4 h-1/4 bg-amber-100 rounded-full top-1/2 -translate-y-1/2 right-4 has-tooltip relative">
-                            <span class="absolute top-2 left-2 font-bold text-amber-800">Complexo de Golgi</span>
+                        
+                        <div class="organelle bg-amber-100 w-44 h-44 top-32 right-12 rounded-full border-2 border-amber-300 has-tooltip relative" data-popup="golgi">
+                            <span class="font-bold text-amber-800 text-center">Complexo de Golgi</span>
                             <span class="custom-tooltip">Organela responsável pelo processamento, empacotamento e distribuição de proteínas</span>
                         </div>
-                        <div class="absolute w-1/5 h-1/5 bg-red-100 rounded-full top-1/4 right-1/4 has-tooltip relative">
-                            <span class="absolute top-2 left-2 font-bold text-red-800">Lisossomo</span>
+                        
+                        <div class="organelle bg-red-100 w-36 h-36 top-8 right-48 rounded-full border-2 border-red-300 has-tooltip relative" data-popup="lisossomo">
+                            <span class="font-bold text-red-800 text-center">Lisossomo</span>
                             <span class="custom-tooltip">Organela contendo enzimas digestivas para degradação de materiais internalizados</span>
                         </div>
-                        <div class="absolute top-0 bottom-0 left-0 right-0 p-2 font-bold text-sky-800 has-tooltip relative">
-                            Citosol
-                            <span class="custom-tooltip">Líquido que preenche o interior da célula, onde ocorrem diversas reações metabólicas</span>
+                        
+                        <div class="organelle bg-blue-100 w-56 h-56 bottom-8 left-1/2 transform -translate-x-1/2 rounded-full border-2 border-blue-300 flex items-center justify-center has-tooltip relative" data-popup="nucleo">
+                            <span class="font-bold text-blue-800 text-center">Núcleo</span>
+                            <span class="custom-tooltip">Contém o DNA com os genes que codificam as moléculas de MHC</span>
                         </div>
-                        <!-- Elementos da Simulação -->
-                        <div id="sim-virus" class="simulation-element w-8 h-8 bg-red-500 rounded-full top-[10%] left-[50%] -translate-x-1/2 opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Partícula viral: Patógeno intracelular que será processado e apresentado via MHC I</span>
+                        
+                        <!-- Elementos da Via Endógena -->
+                        <div class="pathway-step bg-red-500 top-16 left-64 has-tooltip relative" data-step="1" data-pathway="endo">
+                            <span>1</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Infecção Viral</h4>
+                                <p class="text-sm">Vírus invade a célula e libera seu material genético no citosol.</p>
+                            </div>
                         </div>
-                        <div id="sim-proteasome" class="simulation-element w-10 h-10 bg-purple-500 rounded-md top-[25%] left-[50%] -translate-x-1/2 opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Proteassomo: Complexo proteico que degrada proteínas citosólicas marcadas com ubiquitina</span>
+                        
+                        <div class="pathway-step bg-red-500 top-40 left-64 has-tooltip relative" data-step="2" data-pathway="endo">
+                            <span>2</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Síntese de Proteínas Virais</h4>
+                                <p class="text-sm">A maquinaria celular é sequestrada para produzir proteínas virais.</p>
+                            </div>
                         </div>
-                        <div id="sim-peptide" class="simulation-element w-3 h-3 bg-red-700 rounded-full top-[35%] left-[50%] -translate-x-1/2 opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Peptídeo antigênico: Fragmento proteico resultante da degradação pelo proteassomo</span>
+                        
+                        <div class="pathway-step bg-purple-500 top-64 left-64 has-tooltip relative" data-step="3" data-pathway="endo">
+                            <span>3</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Degradação pelo Proteassomo</h4>
+                                <p class="text-sm">Proteínas virais são marcadas com ubiquitina e degradadas no proteassomo.</p>
+                            </div>
                         </div>
-                        <div id="sim-tap" class="simulation-element w-4 h-8 bg-indigo-400 rounded top-[40%] left-[17%] opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Transportador TAP: Proteína que transporta peptídeos do citosol para o retículo endoplasmático</span>
+                        
+                        <div class="pathway-step bg-purple-500 top-88 left-48 has-tooltip relative" data-step="4" data-pathway="endo">
+                            <span>4</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Transporte para o RE</h4>
+                                <p class="text-sm">Peptídeos são transportados para o RE pelo complexo TAP.</p>
+                            </div>
                         </div>
-                        <div id="sim-mhc1" class="simulation-element w-8 h-6 bg-blue-500 rounded top-[50%] left-[30%] opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">MHC Classe I: Molécula que se liga a peptídeos no RE e os apresenta na superfície celular</span>
+                        
+                        <div class="pathway-step bg-blue-500 top-88 left-24 has-tooltip relative" data-step="5" data-pathway="endo">
+                            <span>5</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Montagem do MHC I</h4>
+                                <p class="text-sm">Peptídeos se ligam a moléculas de MHC I no RE.</p>
+                            </div>
                         </div>
-                        <div id="sim-bact" class="simulation-element w-10 h-6 bg-green-600 rounded-full top-[50%] left-[10%] opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Bactéria: Patógeno extracelular que será internalizado e processado via MHC II</span>
+                        
+                        <div class="pathway-step bg-blue-500 top-64 left-8 has-tooltip relative" data-step="6" data-pathway="endo">
+                            <span>6</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Transporte para o Golgi</h4>
+                                <p class="text-sm">Complexos MHC I-peptídeo são transportados para o complexo de Golgi.</p>
+                            </div>
                         </div>
-                        <div id="sim-mhc2" class="simulation-element w-8 h-6 bg-green-500 rounded top-[50%] left-[40%] opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">MHC Classe II: Molécula que se liga a peptídeos em vesículas e os apresenta na superfície</span>
+                        
+                        <div class="pathway-step bg-blue-500 top-40 left-8 has-tooltip relative" data-step="7" data-pathway="endo">
+                            <span>7</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Expressão na Membrana</h4>
+                                <p class="text-sm">MHC I com peptídeo viral é expresso na superfície celular.</p>
+                            </div>
                         </div>
-                        <div id="sim-vesicle" class="simulation-element w-12 h-12 border-2 border-amber-500 rounded-full top-[50%] left-[80%] opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Vesícula de transporte: Carrega moléculas de MHC para a membrana plasmática</span>
+                        
+                        <!-- Elementos da Via Exógena -->
+                        <div class="pathway-step bg-green-500 top-16 right-64 has-tooltip relative" data-step="1" data-pathway="exo">
+                            <span>1</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Fagocitose</h4>
+                                <p class="text-sm">APC internaliza bactéria por fagocitose, formando fagossomo.</p>
+                            </div>
                         </div>
-                        <div id="sim-clip" class="simulation-element w-6 h-3 bg-pink-500 rounded top-[60%] left-[45%] opacity-0 has-tooltip relative">
-                            <span class="custom-tooltip">Peptídeo CLIP: Bloqueia a fenda de ligação do MHC II até ser substituído por peptídeo antigênico</span>
+                        
+                        <div class="pathway-step bg-green-500 top-40 right-64 has-tooltip relative" data-step="2" data-pathway="exo">
+                            <span>2</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Fusão com Lisossomo</h4>
+                                <p class="text-sm">Fagossomo funde com lisossomo, formando fagolisossomo.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div id="step-description" class="mt-4 p-4 bg-slate-100 rounded-lg text-center text-slate-700 min-h-[60px]">Selecione uma via para começar a simulação.</div>
-                    <div class="flex justify-center space-x-4 mt-4">
-                        <button id="prev-step" class="px-5 py-2 bg-slate-300 rounded-md shadow hover:bg-slate-400 transition">&larr; Anterior</button>
-                        <button id="next-step" class="px-5 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition">Próximo &rarr;</button>
-                        <button id="restart-sim" class="px-5 py-2 bg-purple-500 text-white rounded-md shadow hover:bg-purple-600 transition">Reiniciar</button>
+                        
+                        <div class="pathway-step bg-green-500 top-64 right-64 has-tooltip relative" data-step="3" data-pathway="exo">
+                            <span>3</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Degradação do Patógeno</h4>
+                                <p class="text-sm">Bactéria é degradada em peptídeos por enzimas lisossomais.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-teal-500 top-88 right-48 has-tooltip relative" data-step="4" data-pathway="exo">
+                            <span>4</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Síntese de MHC II</h4>
+                                <p class="text-sm">MHC II é sintetizado no RE com cadeia invariante (CLIP).</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-teal-500 top-88 right-24 has-tooltip relative" data-step="5" data-pathway="exo">
+                            <span>5</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Fusão de Vesículas</h4>
+                                <p class="text-sm">Vesículas com MHC II fundem com fagolisossomos.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-teal-500 top-64 right-8 has-tooltip relative" data-step="6" data-pathway="exo">
+                            <span>6</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Troca de CLIP</h4>
+                                <p class="text-sm">HLA-DM catalisa troca de CLIP por peptídeo antigênico.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-teal-500 top-40 right-8 has-tooltip relative" data-step="7" data-pathway="exo">
+                            <span>7</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Expressão na Membrana</h4>
+                                <p class="text-sm">MHC II com peptídeo bacteriano é expresso na superfície.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Elementos da Via Cruzada -->
+                        <div class="pathway-step bg-purple-500 top-24 left-1/2 transform -translate-x-1/2 has-tooltip relative" data-step="1" data-pathway="cruzada">
+                            <span>1</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Captura de Antígeno Exógeno</h4>
+                                <p class="text-sm">Célula dendrítica captura antígeno exógeno por fagocitose.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-purple-500 top-48 left-1/2 transform -translate-x-1/2 has-tooltip relative" data-step="2" data-pathway="cruzada">
+                            <span>2</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Escape para o Citosol</h4>
+                                <p class="text-sm">Antígeno escapa do fagolisossomo para o citosol.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-purple-500 top-72 left-1/2 transform -translate-x-1/2 has-tooltip relative" data-step="3" data-pathway="cruzada">
+                            <span>3</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Processamento via Proteassomo</h4>
+                                <p class="text-sm">Antígeno é processado pelo proteassomo como na via endógena.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pathway-step bg-purple-500 top-96 left-1/2 transform -translate-x-1/2 has-tooltip relative" data-step="4" data-pathway="cruzada">
+                            <span>4</span>
+                            <div class="pathway-description">
+                                <h4 class="font-bold">Apresentação via MHC I</h4>
+                                <p class="text-sm">Peptídeo é apresentado por MHC I para ativação de CD8+.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Linhas de Conexão -->
+                        <div class="pathway-line w-64 top-32 left-64 transform rotate-90" data-pathway="endo"></div>
+                        <div class="pathway-line w-48 top-64 left-48 transform rotate-0" data-pathway="endo"></div>
+                        <div class="pathway-line w-48 top-88 left-24 transform rotate-90" data-pathway="endo"></div>
+                        <div class="pathway-line w-48 top-64 left-8 transform rotate-0" data-pathway="endo"></div>
+                        
+                        <div class="pathway-line w-64 top-32 right-64 transform rotate-90" data-pathway="exo"></div>
+                        <div class="pathway-line w-48 top-64 right-48 transform rotate-0" data-pathway="exo"></div>
+                        <div class="pathway-line w-48 top-88 right-24 transform rotate-90" data-pathway="exo"></div>
+                        <div class="pathway-line w-48 top-64 right-8 transform rotate-0" data-pathway="exo"></div>
+                        
+                        <div class="pathway-line w-48 top-48 left-1/2 transform -translate-x-1/2 rotate-90" data-pathway="cruzada"></div>
+                        <div class="pathway-line w-48 top-72 left-1/2 transform -translate-x-1/2 rotate-90" data-pathway="cruzada"></div>
+                        <div class="pathway-line w-48 top-96 left-1/2 transform -translate-x-1/2 rotate-90" data-pathway="cruzada"></div>
                     </div>
                     
-                    <!-- Detalhes dos Passos -->
-                    <div id="pathway-details" class="mt-6 p-6 bg-blue-50/50 border-l-4 border-blue-300 rounded-lg hidden">
-                        <p id="detail1-1" class="step-detail"><b>Detalhe do Passo 1:</b> Uma proteína <b class="highlight-blue">anormal ou viral</b>, presente no citoplasma, é marcada com <i class="italic">ubiquitina</i> para ser destruída.</p>
-                        <p id="detail1-2" class="step-detail hidden"><b>Detalhe do Passo 2:</b> O <b class="font-bold-sky">proteassoma</b>, o "triturador de lixo" da célula, degrada a proteína marcada em pequenos peptídeos.</p>
-                        <p id="detail1-3" class="step-detail hidden"><b>Detalhe do Passo 3:</b> Os peptídeos são transportados para dentro do Retículo Endoplasmático pela proteína <b class="font-bold-sky has-tooltip relative">TAP<span class="custom-tooltip">Transporter associated with Antigen Processing</span></b>. Lá, eles se ligam à fenda da molécula de <b class="highlight-blue">MHC Classe I</b>.</p>
-                        <p id="detail1-4" class="step-detail hidden"><b>Detalhe do Passo 4:</b> O complexo estável MHC I-peptídeo é transportado para a superfície da célula, onde "mostra" o antígeno para os <b class="font-bold-sky">linfócitos T CD8+</b>. Se reconhecido, a célula infectada é destruída.</p>
-                        <p id="detail2-1" class="step-detail hidden"><b>Detalhe do Passo 1:</b> Uma <b class="font-bold-sky">Célula Apresentadora de Antígenos (APC)</b> engloba um patógeno <b class="highlight-green">extracelular</b> (ex: bactéria) por fagocitose.</p>
-                        <p id="detail2-2" class="step-detail hidden"><b>Detalhe do Passo 2:</b> Dentro da célula, o patógeno é degradado em peptídeos no interior do <b class="font-bold-sky">fagolisossomo</b>.</p>
-                        <p id="detail2-3" class="step-detail hidden"><b>Detalhe do Passo 3:</b> A molécula de <b class="highlight-green">MHC Classe II</b>, que estava com sua fenda bloqueada pelo peptídeo <b class="font-bold-sky has-tooltip relative">CLIP<span class="custom-tooltip">Class II-associated Invariant chain Peptide</span></b>, encontra os peptídeos do patógeno. A molécula <i class="italic">HLA-DM</i> catalisa a troca do CLIP pelo peptídeo antigênico.</p>
-                        <p id="detail2-4" class="step-detail hidden"><b>Detalhe do Passo 4:</b> O complexo MHC II-peptídeo é transportado para a superfície da APC para "mostrar" o antígeno aos <b class="font-bold-sky">linfócitos T CD4+</b>, que então orquestram a resposta imune.</p>
+                    <div id="step-description" class="mt-4 p-4 bg-slate-100 rounded-lg text-center text-slate-700 min-h-[60px] flex items-center justify-center">
+                        <span>Selecione uma via para começar a exploração. Clique nos números para ver detalhes de cada etapa.</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-center gap-4 mt-4">
+                        <button id="prev-step" class="px-5 py-2 bg-slate-300 rounded-md shadow hover:bg-slate-400 transition flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Anterior
+                        </button>
+                        <button id="next-step" class="px-5 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition flex items-center">
+                            Próximo <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        <button id="restart-sim" class="px-5 py-2 bg-purple-500 text-white rounded-md shadow hover:bg-purple-600 transition flex items-center">
+                            <i class="fas fa-redo mr-2"></i> Reiniciar
+                        </button>
+                        <button id="show-all" class="px-5 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition flex items-center">
+                            <i class="fas fa-eye mr-2"></i> Mostrar Tudo
+                        </button>
+                    </div>
+                 </div>
+                 
+                 <!-- Detalhes dos Passos -->
+                 <div id="pathway-details" class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Detalhamento da Via Selecionada</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-blue-600 mb-2" id="pathway-title">Via Endógena (MHC Classe I)</h4>
+                            <p id="pathway-description" class="text-slate-600">Apresentação de antígenos intracelulares (vírus, proteínas próprias alteradas) para linfócitos T CD8+.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-700 mb-2">Passo Atual: <span id="current-step">-</span></h4>
+                            <p id="step-detail" class="text-slate-600">Nenhum passo selecionado. Clique em um número no diagrama ou use os botões de navegação.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Mnemônicos para Vias -->
+                    <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
+                        <h4 class="font-bold text-blue-700 mb-2"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Mnemônicos para as Vias de Apresentação</h4>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-white p-3 rounded shadow-sm">
+                                <h5 class="font-bold text-blue-600">Via Endógena</h5>
+                                <p class="text-sm">"<b>I</b>nside → MHC <b>I</b>" | "1 x 8 = 8"</p>
+                            </div>
+                            <div class="bg-white p-3 rounded shadow-sm">
+                                <h5 class="font-bold text-green-600">Via Exógena</h5>
+                                <p class="text-sm">"<b>E</b>xterno → MHC <b>II</b>" | "2 x 4 = 8"</p>
+                            </div>
+                            <div class="bg-white p-3 rounded shadow-sm">
+                                <h5 class="font-bold text-purple-600">Via Cruzada</h5>
+                                <p class="text-sm">"Célula <b>D</b>endrítica <b>C</b>ruza as vias"</p>
+                            </div>
+                        </div>
                     </div>
                  </div>
             </section>
@@ -1106,14 +1483,14 @@
                 </div>
             </section>
 
-            <!-- Seção Memorização -->
+            <!-- Seção Memorização - EXPANDIDA -->
             <section id="memoria" class="fade-in-section">
-                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Arsenal de Memorização</h2>
-                 <p class="mb-8 text-lg text-slate-600 leading-relaxed">Utilize este arsenal de mnemônicos e associações para solidificar seu conhecimento. Clique em cada tópico para expandir.</p>
+                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Arsenal de Memorização Completo</h2>
+                 <p class="mb-8 text-lg text-slate-600 leading-relaxed">Utilize este arsenal completo de mnemônicos e associações para solidificar seu conhecimento de forma definitiva. Clique em cada tópico para expandir e revelar mais técnicas de memorização.</p>
                  <div class="space-y-4">
                     <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
                         <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
-                            <div class="flex items-center"><i class="fas fa-calculator mr-3 text-blue-500"></i>Regras Fundamentais</div>
+                            <div class="flex items-center"><i class="fas fa-calculator mr-3 text-blue-500"></i>Regras Fundamentais e Numéricas</div>
                             <span class="transform transition-transform">&#9660;</span>
                         </button>
                         <div class="accordion-body p-5 border-t border-slate-200">
@@ -1129,18 +1506,41 @@
                                     <p>Para a Classe I, lembre-se do <b>"Bolo de Aniversário de Cereja"</b>.</p>
                                     <p class="font-bold text-xl mt-2">B - A - C</p>
                                     <p>(HLA-<b>B</b>, HLA-<b>A</b>, HLA-<b>C</b>)</p>
+                                    <p class="text-sm mt-2 text-slate-600">Ou: "<b>B</b>eatles <b>A</b>lways <b>C</b>ome"</p>
                                 </div>
                                 <div class="bg-white p-4 rounded-lg shadow-xl border-t-4 border-green-400">
                                     <h3 class="font-bold text-lg text-green-700 mb-2">Genes da Classe II</h3>
                                     <p>Para a Classe II, imagine um <b>DR</b>agão comendo um <b>D</b>oce de <b>Q</b>uiabo num <b>P</b>iquenique.</p>
                                     <p class="font-bold text-xl mt-2">DR - DQ - DP</p>
+                                    <p class="text-sm mt-2 text-slate-600">Ou: "<b>DR</b>agon <b>D</b>evours <b>Q</b>uietly at <b>P</b>icnic"</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Novos Mnemônicos Numéricos -->
+                            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                                <h4 class="font-bold text-blue-700 mb-2"><i class="fas fa-sort-numeric-up-alt mr-2"></i>Mais Mnemônicos Numéricos</h4>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="font-semibold">Tamanho dos Peptídeos:</p>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>MHC I: <b>8-10</b> aminoácidos → "1 dígito"</li>
+                                            <li>MHC II: <b>13-18</b> aminoácidos → "2 dígitos"</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Cadeias Polimórficas:</p>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>MHC I: <b>1</b> cadeia polimórfica (α)</li>
+                                            <li>MHC II: <b>2</b> cadeias polimórficas (α e β)</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
                          <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
-                            <div class="flex items-center"><i class="fas fa-sitemap mr-3 text-green-500"></i>Lógica das Vias e Células</div>
+                            <div class="flex items-center"><i class="fas fa-sitemap mr-3 text-green-500"></i>Lógica das Vias, Células e Processos</div>
                             <span class="transform transition-transform">&#9660;</span>
                         </button>
                         <div class="accordion-body p-5 border-t border-slate-200">
@@ -1166,11 +1566,32 @@
                                     <p>Classe <b>2</b> tem <b>2</b> cadeias longas e polimórficas (alfa e beta).</p>
                                 </div>
                             </div>
+                            
+                            <!-- Novos Mnemônicos de Processos -->
+                            <div class="mt-6 p-4 bg-green-50 rounded-lg">
+                                <h4 class="font-bold text-green-700 mb-2"><i class="fas fa-cogs mr-2"></i>Mnemônicos para Processos Celulares</h4>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="font-semibold">Via Endógena:</p>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>"<b>V</b>írus → <b>P</b>roteassomo → <b>T</b>AP → <b>M</b>HC I"</li>
+                                            <li>"<b>I</b>nside processa <b>I</b>nternalmente"</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Via Exógena:</p>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>"<b>B</b>actéria → <b>F</b>agossomo → <b>M</b>HC II"</li>
+                                            <li>"<b>E</b>xterno entra e é <b>E</b>xternalizado"</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
                          <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
-                            <div class="flex items-center"><i class="fas fa-stethoscope mr-3 text-purple-500"></i>Associações Clínicas</div>
+                            <div class="flex items-center"><i class="fas fa-stethoscope mr-3 text-purple-500"></i>Associações Clínicas e Transplantes</div>
                             <span class="transform transition-transform">&#9660;</span>
                         </button>
                         <div class="accordion-body p-5 border-t border-slate-200">
@@ -1187,6 +1608,79 @@
                                <li>Os loci mais importantes para transplante são <b>HLA-A, HLA-B e HLA-DR</b> (os "ABCs" do transplante).</li>
                                <li>Para transplante de medula óssea, a compatibilidade deve ser quase perfeita para evitar doença do enxerto contra hospedeiro.</li>
                            </ul>
+                           
+                           <!-- Novos Mnemônicos Clínicos -->
+                           <div class="mt-6 p-4 bg-purple-50 rounded-lg">
+                                <h4 class="font-bold text-purple-700 mb-2"><i class="fas fa-hospital-user mr-2"></i>Mnemônicos para Transplantes</h4>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="font-semibold">Tipos de Rejeição:</p>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li><b>H</b>iperaguda: <b>H</b>orários (minutos/horas)</li>
+                                            <li><b>A</b>guda: <b>A</b>lguns dias/semanas</li>
+                                            <li><b>C</b>rônica: <b>C</b>rônica (meses/anos)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Tipos de Transplante:</p>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li><b>A</b>loenxerto: <b>A</b>lguém diferente</li>
+                                            <li><b>I</b>sotransplante: <b>I</b>gual (gêmeos)</li>
+                                            <li><b>A</b>utotransplante: <b>A</b>uto (próprio)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Novo Acordeão: Técnicas de Memorização Avançadas -->
+                    <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
+                         <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
+                            <div class="flex items-center"><i class="fas fa-graduation-cap mr-3 text-red-500"></i>Técnicas de Memorização Avançadas</div>
+                            <span class="transform transition-transform">&#9660;</span>
+                        </button>
+                        <div class="accordion-body p-5 border-t border-slate-200">
+                           <h4 class="font-bold text-red-600 mb-2">Método de Loci (Palácio da Memória)</h4>
+                           <p class="text-slate-600">Associe cada conceito de MHC/HLA a um cômodo ou objeto em uma casa imaginária:</p>
+                           <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500">
+                                    <h5 class="font-bold text-red-700">Entrada</h5>
+                                    <p class="text-sm">MHC I - "Porta de entrada" para vírus (intracelulares)</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500">
+                                    <h5 class="font-bold text-green-700">Cozinha</h5>
+                                    <p class="text-sm">MHC II - Local onde processamos comida (exógena)</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500">
+                                    <h5 class="font-bold text-blue-700">Quarto</h5>
+                                    <p class="text-sm">Núcleo - Onde está o "coração" da célula (DNA)</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-purple-500">
+                                    <h5 class="font-bold text-purple-700">Sala</h5>
+                                    <p class="text-sm">Superfície celular - Onde "recebemos visitas" (linfócitos T)</p>
+                                </div>
+                            </div>
+                            
+                            <h4 class="font-bold text-red-600 mt-6 mb-2">Associações Criativas</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-bold text-slate-700">CD8+ como "Polícia Interna"</h5>
+                                    <p class="text-sm">Patrulha o interior das células procurando "criminosos" (vírus, células tumorais)</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-bold text-slate-700">CD4+ como "Coordenador de Emergência"</h5>
+                                    <p class="text-sm">Não mata diretamente, mas coordena toda a resposta contra invasores externos</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-bold text-slate-700">Células Dendríticas como "Especialistas em Inteligência"</h5>
+                                    <p class="text-sm">Coletam informações (antígenos) e as apresentam de todas as formas possíveis</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-bold text-slate-700">Proteassomo como "Triturador de Lixo"</h5>
+                                    <p class="text-sm">Destrói proteínas indesejadas em pequenos pedaços (peptídeos)</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                  </div>
@@ -1226,175 +1720,195 @@
                 document.getElementById('mhc2-container').classList.toggle('exploded');
             });
             
-            // Simulation Logic
-            const simElements = {
-                virus: document.getElementById('sim-virus'),
-                proteasome: document.getElementById('sim-proteasome'),
-                peptide: document.getElementById('sim-peptide'),
-                tap: document.getElementById('sim-tap'),
-                mhc1: document.getElementById('sim-mhc1'),
-                bact: document.getElementById('sim-bact'),
-                mhc2: document.getElementById('sim-mhc2'),
-                vesicle: document.getElementById('sim-vesicle'),
-                clip: document.getElementById('sim-clip')
+            // Simulation Logic for Antigen Pathway
+            const pathwaySteps = document.querySelectorAll('.pathway-step');
+            const pathwayLines = document.querySelectorAll('.pathway-line');
+            const stepDesc = document.getElementById('step-description');
+            const currentStepDisplay = document.getElementById('current-step');
+            const pathwayTitle = document.getElementById('pathway-title');
+            const pathwayDescription = document.getElementById('pathway-description');
+            const stepDetail = document.getElementById('step-detail');
+            
+            let currentPathway = 'endo';
+            let currentStep = 0;
+            
+            // Pathway descriptions
+            const pathwayInfo = {
+                endo: {
+                    title: 'Via Endógena (MHC Classe I)',
+                    description: 'Apresentação de antígenos intracelulares (vírus, proteínas próprias alteradas) para linfócitos T CD8+. Segue o processamento no citosol e montagem no retículo endoplasmático.',
+                    steps: {
+                        1: 'Infecção Viral: Vírus invade a célula e libera seu material genético no citosol.',
+                        2: 'Síntese de Proteínas Virais: A maquinaria celular é sequestrada para produzir proteínas virais usando os ribossomos.',
+                        3: 'Degradação pelo Proteassomo: Proteínas virais são marcadas com ubiquitina e degradadas no proteassomo em peptídeos menores.',
+                        4: 'Transporte para o RE: Peptídeos são transportados para o lúmen do retículo endoplasmático pelo complexo TAP (Transportador Associado ao Processamento de Antígenos).',
+                        5: 'Montagem do MHC I: No RE, os peptídeos se ligam às moléculas de MHC Classe I recém-sintetizadas, formando complexos estáveis.',
+                        6: 'Transporte para o Golgi: Os complexos MHC I-peptídeo são transportados para o complexo de Golgi para processamento adicional e empacotamento.',
+                        7: 'Expressão na Membrana: Vesículas contendo MHC I com peptídeo viral fundem-se com a membrana plasmática, expressando o complexo na superfície celular para reconhecimento por linfócitos T CD8+.'
+                    }
+                },
+                exo: {
+                    title: 'Via Exógena (MHC Classe II)',
+                    description: 'Apresentação de antígenos extracelulares (bactérias, fungos, parasitas) para linfócitos T CD4+. Envolve fagocitose e processamento em compartimentos vesiculares.',
+                    steps: {
+                        1: 'Fagocitose: Célula apresentadora de antígenos (APC) internaliza bactéria ou outro patógeno extracelular por fagocitose, formando um fagossomo.',
+                        2: 'Fusão com Lisossomo: O fagossomo funde-se com lisossomos, formando um fagolisossomo contendo enzimas digestivas.',
+                        3: 'Degradação do Patógeno: A bactéria é degradada em peptídeos menores pelas enzimas lisossomais (proteases, lipases, etc).',
+                        4: 'Síntese de MHC II: No retículo endoplasmático, as moléculas de MHC Classe II são sintetizadas com a cadeia invariante (Ii) bloqueando o sítio de ligação ao peptídeo.',
+                        5: 'Fusão de Vesículas: Vesículas contendo MHC II fundem-se com os fagolisossomos contendo os peptídeos antigênicos.',
+                        6: 'Troca de CLIP: A molécula HLA-DM catalisa a remoção do peptídeo CLIP (Fragmento da cadeia invariante) e sua substituição por peptídeos antigênicos derivados do patógeno.',
+                        7: 'Expressão na Membrana: O complexo MHC II-peptídeo é transportado para a superfície celular para apresentação aos linfócitos T CD4+, que então coordenam a resposta imune adaptativa.'
+                    }
+                },
+                cruzada: {
+                    title: 'Apresentação Cruzada',
+                    description: 'Mecanismo especializado onde células dendríticas apresentam antígenos exógenos via MHC Classe I, permitindo ativação de linfócitos T CD8+ contra patógenos extracelulares.',
+                    steps: {
+                        1: 'Captura de Antígeno Exógeno: Célula dendrítica captura antígeno exógeno (por exemplo, de célula apoptótica ou patógeno extracelular) por fagocitose ou endocitose.',
+                        2: 'Escape para o Citosol: Parte do antígeno capturado escapa do fagolisossomo para o citosol através de mecanismos específicos (como poros na membrana ou transporte ativo).',
+                        3: 'Processamento via Proteassomo: O antígeno que atingiu o citosol é processado pelo proteassomo, seguindo a via endógena clássica.',
+                        4: 'Apresentação via MHC I: Os peptídeos resultantes são carregados em moléculas de MHC Classe I e apresentados na superfície celular, ativando linfócitos T CD8+ específicos para antígenos que originalmente eram extracelulares.'
+                    }
+                }
             };
 
-            const endoSteps = [
-                { 
-                    desc: "1. Um vírus infecta a célula e suas proteínas são produzidas no citosol.", 
-                    show: ['virus'], 
-                    pos: { virus: { top: '10%', left: '50%' } },
-                    detail: 'detail1-1'
-                },
-                { 
-                    desc: "2. A proteína viral é marcada para destruição e processada pelo proteassoma.", 
-                    show: ['virus', 'proteasome'], 
-                    pos: { virus: { top: '25%', left: '50%'}, proteasome: {top: '25%', left: '50%'} },
-                    detail: 'detail1-2'
-                },
-                { 
-                    desc: "3. O proteassoma cliva a proteína em pequenos peptídeos.", 
-                    show: ['peptide', 'proteasome'], 
-                    pos: { peptide: { top: '35%', left: '50%'} },
-                    detail: 'detail1-2'
-                },
-                { 
-                    desc: "4. Os peptídeos são transportados para o Retículo Endoplasmático (RE) pelo transportador TAP.", 
-                    show: ['peptide', 'tap'], 
-                    pos: { peptide: { top: '40%', left: '20%'}, tap: {top: '40%', left: '17%'} },
-                    detail: 'detail1-3'
-                },
-                { 
-                    desc: "5. No RE, o peptídeo se liga a uma molécula de MHC Classe I recém-sintetizada.", 
-                    show: ['mhc1'], 
-                    pos: { mhc1: {top: '50%', left: '30%'} },
-                    detail: 'detail1-3'
-                },
-                { 
-                    desc: "6. O complexo MHC I-peptídeo é transportado via Golgi para a superfície celular.", 
-                    show: ['vesicle'], 
-                    pos: { vesicle: { top: '50%', left: '80%'} },
-                    detail: 'detail1-4'
-                },
-                { 
-                    desc: "7. O complexo é expresso na membrana, pronto para ser reconhecido por um Linfócito T CD8+.", 
-                    show: ['vesicle'], 
-                    pos: { vesicle: { top: '5%', left: '80%'} },
-                    detail: 'detail1-4'
-                },
-            ];
-
-            const exoSteps = [
-                { 
-                    desc: "1. Uma bactéria é fagocitada por uma APC, formando um fagossomo.", 
-                    show: ['bact'], 
-                    pos: { bact: { top: '50%', left: '10%' } },
-                    detail: 'detail2-1'
-                },
-                { 
-                    desc: "2. O fagossomo se funde com um lisossomo, e a bactéria é digerida em peptídeos.", 
-                    show: ['bact'], 
-                    pos: { bact: { top: '50%', left: '20%'} },
-                    detail: 'detail2-2'
-                },
-                { 
-                    desc: "3. No RE, a molécula de MHC Classe II é sintetizada com uma cadeia invariante (CLIP) bloqueando a fenda.", 
-                    show: ['mhc2', 'clip'], 
-                    pos: { mhc2: {top: '50%', left: '40%'}, clip: {top: '55%', left: '40%'} },
-                    detail: 'detail2-3'
-                },
-                { 
-                    desc: "4. O MHC II é transportado em uma vesícula que se funde com o fagolisossomo.", 
-                    show: ['mhc2'], 
-                    pos: { mhc2: {top: '50%', left: '25%'} },
-                    detail: 'detail2-3'
-                },
-                { 
-                    desc: "5. A molécula HLA-DM remove o CLIP, permitindo que o peptídeo bacteriano se ligue ao MHC II.", 
-                    show: ['mhc2'], 
-                    pos: { mhc2: {top: '50%', left: '25%'} },
-                    detail: 'detail2-3'
-                },
-                { 
-                    desc: "6. O complexo MHC II-peptídeo é transportado para a superfície celular.", 
-                    show: ['mhc2'], 
-                    pos: { mhc2: { top: '5%', left: '50%'} },
-                    detail: 'detail2-4'
-                },
-                { 
-                    desc: "7. O complexo é expresso na membrana, pronto para ser reconhecido por um Linfócito T CD4+.", 
-                    show: ['mhc2'], 
-                    pos: { mhc2: { top: '5%', left: '50%'} },
-                    detail: 'detail2-4'
-                },
-            ];
-            
-            let currentPathway = endoSteps;
-            let currentStep = -1;
-            const stepDesc = document.getElementById('step-description');
-            const pathwayDetails = document.getElementById('pathway-details');
-
-            function resetSimulation() {
-                Object.values(simElements).forEach(el => el.style.opacity = '0');
-                currentStep = -1;
-                pathwayDetails.classList.add('hidden');
-                document.querySelectorAll('.step-detail').forEach(detail => detail.classList.add('hidden'));
+            function resetPathway() {
+                pathwaySteps.forEach(step => {
+                    step.classList.remove('active');
+                });
+                pathwayLines.forEach(line => {
+                    line.style.opacity = '0.3';
+                });
+                currentStep = 0;
+                updateDisplay();
             }
 
-            function runStep(step) {
-                resetSimulation();
-                stepDesc.textContent = step.desc;
-                step.show.forEach(key => {
-                    const el = simElements[key];
-                    el.style.opacity = '1';
-                    if (step.pos && step.pos[key]) {
-                        el.style.top = step.pos[key].top;
-                        el.style.left = step.pos[key].left;
+            function showPathway(pathway) {
+                currentPathway = pathway;
+                resetPathway();
+                
+                // Update pathway info
+                pathwayTitle.textContent = pathwayInfo[pathway].title;
+                pathwayDescription.textContent = pathwayInfo[pathway].description;
+                
+                // Hide all steps and lines
+                pathwaySteps.forEach(step => {
+                    step.style.display = 'none';
+                });
+                pathwayLines.forEach(line => {
+                    line.style.display = 'none';
+                });
+                
+                // Show only relevant steps and lines
+                pathwaySteps.forEach(step => {
+                    if (step.dataset.pathway === pathway) {
+                        step.style.display = 'flex';
+                    }
+                });
+                pathwayLines.forEach(line => {
+                    if (line.dataset.pathway === pathway) {
+                        line.style.display = 'block';
                     }
                 });
                 
-                // Show step details
-                pathwayDetails.classList.remove('hidden');
-                document.querySelectorAll('.step-detail').forEach(detail => detail.classList.add('hidden'));
-                if (step.detail) {
-                    document.getElementById(step.detail).classList.remove('hidden');
+                updateDisplay();
+            }
+
+            function showStep(stepNumber) {
+                resetPathway();
+                currentStep = stepNumber;
+                
+                // Highlight steps up to current
+                pathwaySteps.forEach(step => {
+                    if (step.dataset.pathway === currentPathway && parseInt(step.dataset.step) <= stepNumber) {
+                        step.classList.add('active');
+                    }
+                });
+                
+                // Highlight lines up to current
+                pathwayLines.forEach(line => {
+                    if (line.dataset.pathway === currentPathway) {
+                        line.style.opacity = '1';
+                    }
+                });
+                
+                updateDisplay();
+            }
+
+            function updateDisplay() {
+                if (currentStep > 0) {
+                    currentStepDisplay.textContent = currentStep;
+                    stepDetail.textContent = pathwayInfo[currentPathway].steps[currentStep];
+                    stepDesc.innerHTML = `<b>Passo ${currentStep}:</b> ${pathwayInfo[currentPathway].steps[currentStep]}`;
+                } else {
+                    currentStepDisplay.textContent = '-';
+                    stepDetail.textContent = 'Nenhum passo selecionado. Clique em um número no diagrama ou use os botões de navegação.';
+                    stepDesc.innerHTML = `<span>Selecione uma via para começar a exploração. Clique nos números para ver detalhes de cada etapa.</span>`;
                 }
             }
 
-            document.getElementById('tab-endo').addEventListener('click', (e) => {
-                currentPathway = endoSteps;
-                resetSimulation();
-                stepDesc.textContent = "Iniciando a simulação da Via Endógena (Classe I)...";
-                document.getElementById('tab-endo').classList.add('active');
-                document.getElementById('tab-exo').classList.remove('active');
+            // Tab functionality
+            document.getElementById('tab-endo').addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'bg-blue-100', 'text-blue-700');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                document.getElementById('tab-endo').classList.add('active', 'bg-blue-100', 'text-blue-700');
+                showPathway('endo');
             });
 
-            document.getElementById('tab-exo').addEventListener('click', (e) => {
-                currentPathway = exoSteps;
-                resetSimulation();
-                stepDesc.textContent = "Iniciando a simulação da Via Exógena (Classe II)...";
-                document.getElementById('tab-exo').classList.add('active');
-                document.getElementById('tab-endo').classList.remove('active');
+            document.getElementById('tab-exo').addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'bg-green-100', 'text-green-700');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                document.getElementById('tab-exo').classList.add('active', 'bg-green-100', 'text-green-700');
+                showPathway('exo');
             });
-            
+
+            document.getElementById('tab-cruzada').addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'bg-purple-100', 'text-purple-700');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                document.getElementById('tab-cruzada').classList.add('active', 'bg-purple-100', 'text-purple-700');
+                showPathway('cruzada');
+            });
+
+            // Step click functionality
+            pathwaySteps.forEach(step => {
+                step.addEventListener('click', () => {
+                    if (step.dataset.pathway === currentPathway) {
+                        showStep(parseInt(step.dataset.step));
+                    }
+                });
+            });
+
+            // Navigation buttons
             document.getElementById('next-step').addEventListener('click', () => {
-                if (currentStep < currentPathway.length - 1) {
-                    currentStep++;
-                    runStep(currentPathway[currentStep]);
+                const maxStep = Object.keys(pathwayInfo[currentPathway].steps).length;
+                if (currentStep < maxStep) {
+                    showStep(currentStep + 1);
                 }
             });
 
             document.getElementById('prev-step').addEventListener('click', () => {
-                if (currentStep > 0) {
-                    currentStep--;
-                    runStep(currentPathway[currentStep]);
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
                 }
             });
 
             document.getElementById('restart-sim').addEventListener('click', () => {
-                resetSimulation();
-                stepDesc.textContent = "Simulação reiniciada. Selecione um passo para começar.";
+                resetPathway();
             });
+
+            document.getElementById('show-all').addEventListener('click', () => {
+                const maxStep = Object.keys(pathwayInfo[currentPathway].steps).length;
+                showStep(maxStep);
+            });
+
+            // Initialize with endogenous pathway
+            showPathway('endo');
 
             // Haplotype inheritance interaction
             const parentHaplos = document.querySelectorAll('.haplotype-parent');
@@ -1491,17 +2005,164 @@
                 }
             });
 
-            // Example of opening a popup (you can add more as needed)
-            document.querySelectorAll('.has-tooltip').forEach(element => {
-                element.addEventListener('click', (e) => {
-                    const tooltip = element.querySelector('.custom-tooltip');
-                    if (tooltip) {
-                        popupBody.innerHTML = `
-                            <h3 class="text-xl font-bold mb-4">${element.textContent.trim()}</h3>
-                            <p>${tooltip.textContent}</p>
-                        `;
-                        popupOverlay.classList.add('active');
+            // Enhanced popups for organelles
+            document.querySelectorAll('.organelle').forEach(organelle => {
+                organelle.addEventListener('click', () => {
+                    const popupType = organelle.dataset.popup;
+                    let title = '';
+                    let content = '';
+                    
+                    switch(popupType) {
+                        case 're':
+                            title = 'Retículo Endoplasmático';
+                            content = `
+                                <div class="mb-4">
+                                    <p>O <b>Retículo Endoplasmático (RE)</b> é uma organela essencial para a síntese, processamento e transporte de proteínas.</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-bold text-blue-600 mb-2">Funções no Sistema Imune:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Síntese de moléculas de MHC Classe I e II</li>
+                                            <li>Montagem do complexo MHC I-peptídeo</li>
+                                            <li>Associação da cadeia invariante com MHC II</li>
+                                            <li>Controle de qualidade das moléculas de MHC</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-green-600 mb-2">Componentes Chave:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>TAP (Transportador de Antígenos)</li>
+                                            <li>Tapasina</li>
+                                            <li>Calnexina</li>
+                                            <li>Calreticulina</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'golgi':
+                            title = 'Complexo de Golgi';
+                            content = `
+                                <div class="mb-4">
+                                    <p>O <b>Complexo de Golgi</b> é responsável pelo processamento, modificação e distribuição de proteínas e lipídios.</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-bold text-blue-600 mb-2">Funções no Sistema Imune:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Glicosilação final de moléculas de MHC</li>
+                                            <li>Empacotamento em vesículas de transporte</li>
+                                            <li>Direcionamento para a membrana plasmática</li>
+                                            <li>Formação de vesículas secretoras</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-green-600 mb-2">Processos no Golgi:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Cis-Golgi: Recepção do RE</li>
+                                            <li>Golgi Medial: Modificações</li>
+                                            <li>Trans-Golgi: Empacotamento</li>
+                                            <li>Rede Trans-Golgi: Distribuição</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'fagossomo':
+                            title = 'Fagossomo';
+                            content = `
+                                <div class="mb-4">
+                                    <p>O <b>Fagossomo</b> é uma vesícula formada pela internalização de partículas por fagocitose.</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-bold text-blue-600 mb-2">Formação:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Reconhecimento do patógeno</li>
+                                            <li>Internalização por pseudópodes</li>
+                                            <li>Fusão da membrana plasmática</li>
+                                            <li>Formação da vesícula fagocítica</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-green-600 mb-2">Função Imunológica:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Degradação de patógenos extracelulares</li>
+                                            <li>Geração de peptídeos antigênicos</li>
+                                            <li>Início da via de apresentação exógena</li>
+                                            <li>Ativação de respostas inflamatórias</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'lisossomo':
+                            title = 'Lisossomo';
+                            content = `
+                                <div class="mb-4">
+                                    <p>Os <b>Lisossomos</b> são organelas que contêm enzimas digestivas para degradação de materiais.</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-bold text-blue-600 mb-2">Características:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>pH ácido (4.5-5.0)</li>
+                                            <li>Rico em enzimas hidrolíticas</li>
+                                            <li>Membrana resistente a enzimas</li>
+                                            <li>Sistema de transporte de prótons</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-green-600 mb-2">Enzimas Lisossomais:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Proteases (catepsinas)</li>
+                                            <li>Lipases</li>
+                                            <li>Nucleases</li>
+                                            <li>Glicosidases</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'nucleo':
+                            title = 'Núcleo Celular';
+                            content = `
+                                <div class="mb-4">
+                                    <p>O <b>Núcleo</b> é a organela que contém o material genético e controla as atividades celulares.</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-bold text-blue-600 mb-2">Função no Sistema Imune:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>Armazena genes HLA no cromossomo 6</li>
+                                            <li>Controla expressão de moléculas de MHC</li>
+                                            <li>Regula diferenciação de células imunes</li>
+                                            <li>Coordena resposta transcricional</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-green-600 mb-2">Componentes Nucleares:</h5>
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>DNA com genes HLA</li>
+                                            <li>Fatores de transcrição</li>
+                                            <li>Complexos de regulação gênica</li>
+                                            <li>Máquina de splicing alternativo</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        default:
+                            title = organelle.querySelector('span').textContent;
+                            content = `<p>Informações detalhadas sobre ${title}.</p>`;
                     }
+                    
+                    popupBody.innerHTML = `
+                        <h3 class="text-xl font-bold mb-4">${title}</h3>
+                        ${content}
+                    `;
+                    popupOverlay.classList.add('active');
                 });
             });
         });

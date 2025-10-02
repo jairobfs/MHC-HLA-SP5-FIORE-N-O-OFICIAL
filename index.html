@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Definitivo e Interativo de MHC/HLA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --scroll-padding: 8rem;
+            --primary-blue: #3b82f6;
+            --secondary-blue: #22d3ee;
+            --primary-green: #10b981;
+            --accent-purple: #8b5cf6;
+        }
+        
+        html {
+            scroll-padding-top: var(--scroll-padding);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            background-image: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%);
+            color: #334155;
+        }
+        
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .tab-btn.active {
+            border-bottom-width: 2px;
+            border-image: linear-gradient(to right, var(--primary-blue), var(--secondary-blue)) 1;
+            color: var(--primary-blue);
+            background-color: #eff6ff;
+        }
+        
+        .custom-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            background-color: #1e293b;
+            color: #f8fafc;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 50;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            width: max-content;
+            max-width: 250px;
+            transform: translate(-50%, -10px);
+            left: 50%;
+            bottom: 125%;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .custom-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        
+        .has-tooltip:hover .custom-tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        
+        .highlight-blue {
+            background: linear-gradient(to top, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.2) 50%, transparent 50.1%);
+        }
+        
+        .highlight-green {
+            background: linear-gradient(to top, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.2) 50%, transparent 50.1%);
+        }
+        
+        .highlight-purple {
+            background: linear-gradient(to top, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 50%, transparent 50.1%);
+        }
+        
+        .underline-dotted-sky {
+            border-bottom: 2px dotted #38bdf8;
+        }
+        
+        .font-bold-sky {
+            color: #0ea5e9;
+            font-weight: 700;
+        }
+        
+        .underline-wavy-pink {
+            text-decoration: underline;
+            text-decoration-color: #ec4899;
+            text-decoration-style: wavy;
+        }
+        
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .accordion-header span {
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion-item.open .accordion-header span {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        
+        .mhc-container.exploded .mhc-chain {
+            transform: var(--explode-transform);
+        }
+        
+        .mhc-chain {
+            transition: transform 0.5s ease-in-out;
+            cursor: pointer;
+        }
+        
+        .simulation-element {
+            position: absolute;
+            transition: all 1s ease-in-out;
+        }
+        
+        /* From old code */
+        .peptide {
+            transition: all 0.8s ease-in-out;
+        }
+        
+        .mhc-structure.play .peptide-i {
+            transform: translateY(20px) scale(1);
+            opacity: 1;
+        }
+        
+        .mhc-structure.play .peptide-ii {
+            transform: translateY(18px) scale(1);
+            opacity: 1;
+        }
+        
+        .concept-node {
+            transition: all 0.3s ease;
+        }
+        
+        .concept-node:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-blue);
+        }
+        
+        .concept-node:hover ~ .concept-line, .concept-node:hover ~ .concept-group .concept-line {
+            stroke: var(--primary-blue);
+            stroke-width: 3;
+        }
+        
+        .gene-locus {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .gene-locus:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        
+        .haplotype-parent, .haplotype-child {
+            transition: all 0.3s ease;
+        }
+        
+        .allele-box, .disease-box {
+            transition: all 0.3s ease;
+        }
+        
+        .step-container {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .step-container:hover {
+            transform: scale(1.05);
+        }
+        
+        .cross-presentation-path {
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+        
+        .cross-presentation-path.active {
+            opacity: 1;
+            stroke-width: 3;
+        }
+        
+        .ld-block {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .ld-block:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        /* New styles */
+        .glow-effect {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .cell-animation {
+            animation: cell-pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes cell-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+        
+        .lab-equipment {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .lab-equipment:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        
+        .transplant-scenario {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .transplant-scenario:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        .gradient-border {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(45deg, var(--primary-blue), var(--secondary-blue)) border-box;
+        }
+        
+        .molecule-bond {
+            stroke-dasharray: 5;
+            animation: dash 20s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 1000;
+            }
+        }
+        
+        .lab-microscope {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lab-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .lab-slide.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup-content relative">
+            <button class="absolute top-4 right-4 text-slate-500 hover:text-slate-700" id="close-popup">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div id="popup-body"></div>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-10 fade-in-section is-visible">
+            <div class="inline-block p-4 bg-white rounded-full shadow-lg mb-4 transform hover:scale-110 transition-transform floating">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v11.494m-9-5.747h18" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 9.879l4.242 4.242m0-4.242l-4.242 4.242" />
+                    <path d="M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">Guia Definitivo de MHC/HLA</h1>
+            <p class="text-lg text-slate-600 mt-2">Uma simulação interativa dos mecanismos da identidade celular.</p>
+        </header>
+
+        <nav class="sticky top-4 bg-white/80 backdrop-blur-sm z-40 shadow-lg rounded-full mb-12 border border-slate-200 fade-in-section is-visible">
+            <div class="flex justify-center items-center p-2 space-x-1 md:space-x-4 text-sm md:text-base overflow-x-auto">
+                <a href="#visao-geral" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Visão Geral</a>
+                <a href="#estrutura" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Estrutura</a>
+                <a href="#vias" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Vias</a>
+                <a href="#cruzada" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Apres. Cruzada</a>
+                <a href="#genetica" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Genética</a>
+                <a href="#transplantes" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Transplantes</a>
+                <a href="#laboratorio" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Laboratório</a>
+                <a href="#clinica" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Clínica</a>
+                <a href="#memoria" class="nav-link text-slate-700 hover:text-blue-600 font-semibold p-3 rounded-full hover:bg-blue-50">Memorização</a>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Seção Visão Geral -->
+            <section id="visao-geral" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Visão Geral: O RG das Células</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">O <b class="font-bold-sky">Complexo Principal de Histocompatibilidade (MHC)</b>, ou <b class="font-bold-sky">Antígeno Leucocitário Humano (HLA)</b> em humanos, é um conjunto de genes que codificam proteínas de superfície celular essenciais para o reconhecimento do que é <i class="highlight-blue">"próprio"</i> (do seu corpo) e <i class="highlight-green">"não-próprio"</i> (invasores). Sua função é apresentar fragmentos de peptídeos (<span class="underline-dotted-sky has-tooltip relative">antígenos<span class="custom-tooltip">Qualquer substância que desencadeia uma resposta imune.</span></span>) aos <b class="font-bold-sky">linfócitos T</b>, iniciando a resposta imune adaptativa. Pense nele como o "crachá de identificação" de uma célula, mostrando o que ela está fazendo por dentro.</p>
+                
+                <!-- Mapa Conceitual Interativo -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-12 gradient-border">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Mapa Conceitual Interativo</h3>
+                    <div class="relative flex flex-col items-center">
+                         <svg class="absolute w-full h-full top-0 left-0" style="pointer-events: none;">
+                            <line x1="50%" y1="60" x2="15%" y2="150" stroke="#cbd5e1" stroke-width="2" class="concept-line"/>
+                            <line x1="50%" y1="60" x2="50%" y2="150" stroke="#cbd5e1" stroke-width="2" class="concept-line"/>
+                            <line x1="50%" y1="60" x2="85%" y2="150" stroke="#cbd5e1" stroke-width="2" class="concept-line"/>
+                        </svg>
+                        <div class="concept-node bg-blue-100 border-2 border-blue-300 p-3 rounded-lg shadow w-48 text-center z-10 has-tooltip relative">
+                            <b>MHC / HLA</b><br>(Identidade Celular)
+                            <span class="custom-tooltip">Sistema de genes que codificam proteínas responsáveis pela apresentação de antígenos e reconhecimento do próprio organismo.</span>
+                        </div>
+                        <div class="flex justify-between w-full mt-20">
+                            <div class="concept-node bg-sky-100 border-2 border-sky-300 p-3 rounded-lg shadow w-48 text-center z-10 has-tooltip relative">
+                                <b>Polimorfismo</b><br>(Diversidade na população)
+                                <span class="custom-tooltip">Existência de múltiplas variantes alélicas na população, garantindo que diferentes indivíduos respondam a diferentes patógenos.</span>
+                            </div>
+                            <div class="concept-node bg-sky-100 border-2 border-sky-300 p-3 rounded-lg shadow w-48 text-center z-10 has-tooltip relative">
+                                <b>Expressão Codominante</b><br>(Herança Paterna + Materna)
+                                <span class="custom-tooltip">Ambos os alelos herdados (paterno e materno) são expressos igualmente na superfície celular.</span>
+                            </div>
+                            <div class="concept-node bg-sky-100 border-2 border-sky-300 p-3 rounded-lg shadow w-48 text-center z-10 has-tooltip relative">
+                                <b>Ligação Promíscua</b><br>(Flexibilidade de ligação)
+                                <span class="custom-tooltip">Cada molécula de MHC pode ligar-se a uma ampla variedade de peptídeos diferentes, embora com afinidades variadas.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Célula Interativa -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-12">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">A Célula e Seu Sistema de Identificação</h3>
+                    <div class="relative w-full h-64 bg-slate-100 rounded-lg border-2 border-slate-300 flex items-center justify-center cell-animation">
+                        <div class="absolute w-40 h-40 bg-blue-50 rounded-full border-2 border-blue-300 flex items-center justify-center has-tooltip relative">
+                            <span class="font-bold text-blue-700">Núcleo</span>
+                            <span class="custom-tooltip">Contém o DNA com os genes HLA no cromossomo 6</span>
+                        </div>
+                        
+                        <!-- MHC Classe I na superfície -->
+                        <div class="absolute top-8 right-1/4 w-10 h-6 bg-blue-500 rounded flex items-center justify-center border border-slate-800 has-tooltip relative">
+                            <div class="w-6 h-2 bg-red-500 rounded"></div>
+                            <span class="custom-tooltip">MHC Classe I: Apresenta peptídeos intracelulares para linfócitos T CD8+</span>
+                        </div>
+                        
+                        <!-- MHC Classe II na superfície -->
+                        <div class="absolute bottom-8 right-1/4 w-10 h-6 bg-green-500 rounded flex items-center justify-center border border-slate-800 has-tooltip relative">
+                            <div class="w-8 h-2 bg-orange-500 rounded"></div>
+                            <span class="custom-tooltip">MHC Classe II: Apresenta peptídeos extracelulares para linfócitos T CD4+</span>
+                        </div>
+                        
+                        <!-- Linfócito T CD8+ -->
+                        <div class="absolute top-4 right-1/6 w-12 h-12 bg-blue-200 rounded-full border-2 border-blue-400 flex items-center justify-center text-xs text-center has-tooltip relative">
+                            T CD8+
+                            <span class="custom-tooltip">Linfócito T citotóxico: Reconhece antígenos apresentados por MHC Classe I e elimina células infectadas ou anormais</span>
+                        </div>
+                        
+                        <!-- Linfócito T CD4+ -->
+                        <div class="absolute bottom-4 right-1/6 w-12 h-12 bg-green-200 rounded-full border-2 border-green-400 flex items-center justify-center text-xs text-center has-tooltip relative">
+                            T CD4+
+                            <span class="custom-tooltip">Linfócito T auxiliar: Reconhece antígenos apresentados por MHC Classe II e coordena a resposta imune</span>
+                        </div>
+                        
+                        <!-- Retículo Endoplasmático -->
+                        <div class="absolute left-1/4 top-1/2 -translate-y-1/2 w-16 h-16 bg-indigo-100 rounded-lg border border-indigo-300 flex items-center justify-center text-xs text-center has-tooltip relative">
+                            RE
+                            <span class="custom-tooltip">Retículo Endoplasmático: Local de síntese e montagem das moléculas de MHC</span>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-slate-600 text-center">Passe o mouse sobre os componentes para entender suas funções</p>
+                </div>
+            </section>
+
+            <!-- Seção Estrutura Molecular -->
+            <section id="estrutura" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Anatomia Molecular Explodida</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">A <b class="font-bold-sky">arquitetura</b> de uma molécula de MHC determina sua função. As classes <b class="highlight-blue">I</b> e <b class="highlight-green">II</b> possuem estruturas distintas para interagir com diferentes células e peptídeos. Clique no botão para "explodir" a molécula e inspecionar cada componente. Passe o mouse sobre as partes para ver sua função.</p>
+                <div class="text-center mb-8 space-x-4">
+                    <button id="explode-btn" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition-opacity transform hover:scale-105 glow-effect">Explodir / Montar Moléculas</button>
+                    <button id="peptide-btn" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-md shadow-md hover:opacity-90 transition glow-effect" onclick="document.querySelectorAll('.mhc-structure').forEach(el => el.classList.toggle('play'))">
+                        <i class="fas fa-play mr-2"></i>Ativar Ligação de Peptídeo
+                    </button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- MHC Classe I -->
+                    <div class="bg-white p-6 rounded-xl shadow-2xl border border-slate-100 min-h-[400px]">
+                        <h3 class="text-2xl font-bold text-center mb-4 text-blue-600">MHC Classe I</h3>
+                        <div id="mhc1-container" class="mhc-container h-80 relative flex justify-center items-center mhc-structure">
+                            <div class="peptide peptide-i absolute top-0 left-1/2 -translate-x-1/2 bg-red-400 p-1 w-24 rounded-full text-center text-xs text-white font-semibold opacity-0 transform scale-0 z-10 has-tooltip relative">
+                                Peptídeo (8-10aa)
+                                <span class="custom-tooltip">Peptídeo derivado de proteínas intracelulares (vírus, proteínas próprias alteradas)</span>
+                            </div>
+                            <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(-80px) translateX(-50px) rotate(-15deg);">
+                                <div class="w-24 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">α1</div>
+                                <span class="custom-tooltip">Domínio α1: Parte da fenda de ligação do peptídeo. Altamente polimórfico. Forma uma das paredes da fenda de ligação.</span>
+                            </div>
+                            <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(-80px) translateX(50px) rotate(15deg);">
+                                <div class="w-24 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">α2</div>
+                                <span class="custom-tooltip">Domínio α2: Completa a fenda de ligação do peptídeo. Também muito polimórfico. Forma a outra parede da fenda de ligação.</span>
+                            </div>
+                            <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(50px) translateX(-40px);">
+                                <div class="w-20 h-10 bg-blue-400 rounded-lg flex items-center justify-center text-white font-bold shadow-md">α3</div>
+                                <span class="custom-tooltip">Domínio α3: Sítio de ligação para o co-receptor CD8 do Linfócito T. Mantém a molécula ancorada na membrana.</span>
+                            </div>
+                            <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(50px) translateX(40px);">
+                                <div class="w-16 h-10 bg-slate-400 rounded-full flex items-center justify-center text-white font-bold shadow-md">β2m</div>
+                                <span class="custom-tooltip">Beta-2 Microglobulina: Essencial para a estabilidade e expressão da molécula de MHC I. Não é codificada no locus MHC.</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-slate-700 space-y-2">
+                             <p>Apresenta peptídeos <b class="highlight-blue">endógenos</b> (ex: <i class="italic">proteínas virais</i>) para <b class="font-bold-sky">linfócitos T CD8+</b>.</p>
+                             <p>A fenda de ligação é <b class="underline-dotted-sky">fechada</b>, como um <i class="italic">"pão de cachorro-quente"</i>, acomodando peptídeos curtos (8-10 aminoácidos).</p>
+                             <p>Expressa em <b class="highlight-blue">todas as células nucleadas</b> do organismo.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- MHC Classe II -->
+                    <div class="bg-white p-6 rounded-xl shadow-2xl border border-slate-100 min-h-[400px]">
+                        <h3 class="text-2xl font-bold text-center mb-4 text-green-600">MHC Classe II</h3>
+                        <div id="mhc2-container" class="mhc-container h-80 relative flex justify-center items-center mhc-structure">
+                            <div class="peptide peptide-ii absolute top-0 left-1/2 -translate-x-1/2 bg-orange-400 p-1 w-32 rounded-full text-center text-xs text-white font-semibold opacity-0 transform scale-0 z-10 has-tooltip relative">
+                                Peptídeo (13-18aa)
+                                <span class="custom-tooltip">Peptídeo derivado de proteínas extracelulares (bactérias, fungos, parasitas) internalizadas por fagocitose</span>
+                            </div>
+                             <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(-80px) translateX(-50px) rotate(-15deg);">
+                                <div class="w-24 h-12 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">α1</div>
+                                <span class="custom-tooltip">Domínio α1: Parte da fenda de ligação do peptídeo. Menos polimórfico que os domínios da Classe I.</span>
+                            </div>
+                             <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(-80px) translateX(50px) rotate(15deg);">
+                                <div class="w-24 h-12 bg-teal-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">β1</div>
+                                <span class="custom-tooltip">Domínio β1: Completa a fenda de ligação do peptídeo. É o domínio mais polimórfico da molécula de MHC Classe II.</span>
+                            </div>
+                            <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(50px) translateX(-40px);">
+                                <div class="w-20 h-10 bg-green-400 rounded-lg flex items-center justify-center text-white font-bold shadow-md">α2</div>
+                                 <span class="custom-tooltip">Domínio α2: Domínio de suporte da cadeia alfa. Mantém a estrutura da molécula.</span>
+                            </div>
+                             <div class="mhc-chain absolute has-tooltip" style="--explode-transform: translateY(50px) translateX(40px);">
+                                <div class="w-20 h-10 bg-teal-400 rounded-lg flex items-center justify-center text-white font-bold shadow-md">β2</div>
+                                 <span class="custom-tooltip">Domínio β2: Sítio de ligação para o co-receptor CD4 do Linfócito T. Mantém a molécula ancorada na membrana.</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-slate-700 space-y-2">
+                            <p>Apresenta peptídeos <b class="highlight-green">exógenos</b> (ex: <i class="italic">bactérias fagocitadas</i>) para <b class="font-bold-sky">linfócitos T CD4+</b>.</p>
+                            <p>A fenda de ligação é <b class="underline-dotted-sky">aberta</b> nas extremidades, como um <i class="italic">"trilho"</i>, permitindo que peptídeos mais longos se encaixem (13-18 aminoácidos).</p>
+                            <p>Expressa principalmente em <b class="highlight-green">células apresentadoras profissionais</b> (macrófagos, células dendríticas, linfócitos B).</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comparação Estrutural -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mt-8">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Comparação Estrutural entre MHC I e II</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-700">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                <tr>
+                                    <th class="px-4 py-3">Característica</th>
+                                    <th class="px-4 py-3">MHC Classe I</th>
+                                    <th class="px-4 py-3">MHC Classe II</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b">
+                                    <td class="px-4 py-3 font-medium">Estrutura</td>
+                                    <td class="px-4 py-3">Cadeia α (3 domínios) + β2-microglobulina</td>
+                                    <td class="px-4 py-3">Cadeia α (2 domínios) + cadeia β (2 domínios)</td>
+                                </tr>
+                                <tr class="bg-slate-50 border-b">
+                                    <td class="px-4 py-3 font-medium">Fenda de ligação</td>
+                                    <td class="px-4 py-3">Fechada (acomoda 8-10 aminoácidos)</td>
+                                    <td class="px-4 py-3">Aberta (acomoda 13-18 aminoácidos)</td>
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="px-4 py-3 font-medium">Células que expressam</td>
+                                    <td class="px-4 py-3">Todas as células nucleadas</td>
+                                    <td class="px-4 py-3">APCs profissionais (macrófagos, DC, linfócitos B)</td>
+                                </tr>
+                                <tr class="bg-slate-50 border-b">
+                                    <td class="px-4 py-3 font-medium">Linfócito T que reconhece</td>
+                                    <td class="px-4 py-3">CD8+ (citotóxico)</td>
+                                    <td class="px-4 py-3">CD4+ (auxiliar)</td>
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="px-4 py-3 font-medium">Origem do peptídeo</td>
+                                    <td class="px-4 py-3">Endógena (citossol)</td>
+                                    <td class="px-4 py-3">Exógena (vesicular)</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="px-4 py-3 font-medium">Processamento</td>
+                                    <td class="px-4 py-3">Proteassomo, TAP</td>
+                                    <td class="px-4 py-3">Endossomo/lisossomo, HLA-DM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Vias de Apresentação -->
+            <section id="vias" class="mb-20 fade-in-section">
+                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Jornada do Antígeno: Um Tour Celular</h2>
+                 <p class="mb-8 text-lg text-slate-600 leading-relaxed">Siga a jornada de um antígeno desde sua origem até sua apresentação na superfície celular. Esta simulação ilustra o <span class="highlight-green">tráfego intracelular</span> e a maquinaria envolvida em cada via. Use os botões para navegar passo a passo pela simulação.</p>
+                 <div class="bg-white rounded-xl shadow-2xl border border-slate-100 p-4 md:p-8">
+                    <div class="flex justify-center border-b-2 mb-4">
+                        <button id="tab-endo" class="tab-btn p-4 font-semibold text-lg flex-1 text-center transition-colors active">Via Endógena (Classe I)</button>
+                        <button id="tab-exo" class="tab-btn p-4 font-semibold text-lg flex-1 text-center transition-colors">Via Exógena (Classe II)</button>
+                    </div>
+                    <div id="simulation-container" class="relative w-full h-[500px] bg-sky-50 rounded-lg overflow-hidden border-2 border-sky-100">
+                        <!-- Organelas -->
+                        <div class="absolute w-2/3 h-2/3 bg-indigo-100 rounded-xl top-1/4 left-[16.67%] has-tooltip relative">
+                            <span class="absolute top-2 left-2 font-bold text-indigo-800">Retículo Endoplasmático</span>
+                            <span class="custom-tooltip">Organela onde ocorre a síntese de proteínas e o processamento inicial de moléculas de MHC</span>
+                        </div>
+                        <div class="absolute w-1/4 h-1/4 bg-yellow-100 rounded-full top-1/2 -translate-y-1/2 left-4 has-tooltip relative">
+                            <span class="absolute top-2 left-2 font-bold text-yellow-800">Fagossomo</span>
+                            <span class="custom-tooltip">Vesícula formada pela internalização de partículas externas por fagocitose</span>
+                        </div>
+                        <div class="absolute w-1/4 h-1/4 bg-amber-100 rounded-full top-1/2 -translate-y-1/2 right-4 has-tooltip relative">
+                            <span class="absolute top-2 left-2 font-bold text-amber-800">Complexo de Golgi</span>
+                            <span class="custom-tooltip">Organela responsável pelo processamento, empacotamento e distribuição de proteínas</span>
+                        </div>
+                        <div class="absolute w-1/5 h-1/5 bg-red-100 rounded-full top-1/4 right-1/4 has-tooltip relative">
+                            <span class="absolute top-2 left-2 font-bold text-red-800">Lisossomo</span>
+                            <span class="custom-tooltip">Organela contendo enzimas digestivas para degradação de materiais internalizados</span>
+                        </div>
+                        <div class="absolute top-0 bottom-0 left-0 right-0 p-2 font-bold text-sky-800 has-tooltip relative">
+                            Citosol
+                            <span class="custom-tooltip">Líquido que preenche o interior da célula, onde ocorrem diversas reações metabólicas</span>
+                        </div>
+                        <!-- Elementos da Simulação -->
+                        <div id="sim-virus" class="simulation-element w-8 h-8 bg-red-500 rounded-full top-[10%] left-[50%] -translate-x-1/2 opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Partícula viral: Patógeno intracelular que será processado e apresentado via MHC I</span>
+                        </div>
+                        <div id="sim-proteasome" class="simulation-element w-10 h-10 bg-purple-500 rounded-md top-[25%] left-[50%] -translate-x-1/2 opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Proteassomo: Complexo proteico que degrada proteínas citosólicas marcadas com ubiquitina</span>
+                        </div>
+                        <div id="sim-peptide" class="simulation-element w-3 h-3 bg-red-700 rounded-full top-[35%] left-[50%] -translate-x-1/2 opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Peptídeo antigênico: Fragmento proteico resultante da degradação pelo proteassomo</span>
+                        </div>
+                        <div id="sim-tap" class="simulation-element w-4 h-8 bg-indigo-400 rounded top-[40%] left-[17%] opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Transportador TAP: Proteína que transporta peptídeos do citosol para o retículo endoplasmático</span>
+                        </div>
+                        <div id="sim-mhc1" class="simulation-element w-8 h-6 bg-blue-500 rounded top-[50%] left-[30%] opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">MHC Classe I: Molécula que se liga a peptídeos no RE e os apresenta na superfície celular</span>
+                        </div>
+                        <div id="sim-bact" class="simulation-element w-10 h-6 bg-green-600 rounded-full top-[50%] left-[10%] opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Bactéria: Patógeno extracelular que será internalizado e processado via MHC II</span>
+                        </div>
+                        <div id="sim-mhc2" class="simulation-element w-8 h-6 bg-green-500 rounded top-[50%] left-[40%] opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">MHC Classe II: Molécula que se liga a peptídeos em vesículas e os apresenta na superfície</span>
+                        </div>
+                        <div id="sim-vesicle" class="simulation-element w-12 h-12 border-2 border-amber-500 rounded-full top-[50%] left-[80%] opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Vesícula de transporte: Carrega moléculas de MHC para a membrana plasmática</span>
+                        </div>
+                        <div id="sim-clip" class="simulation-element w-6 h-3 bg-pink-500 rounded top-[60%] left-[45%] opacity-0 has-tooltip relative">
+                            <span class="custom-tooltip">Peptídeo CLIP: Bloqueia a fenda de ligação do MHC II até ser substituído por peptídeo antigênico</span>
+                        </div>
+                    </div>
+                    <div id="step-description" class="mt-4 p-4 bg-slate-100 rounded-lg text-center text-slate-700 min-h-[60px]">Selecione uma via para começar a simulação.</div>
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <button id="prev-step" class="px-5 py-2 bg-slate-300 rounded-md shadow hover:bg-slate-400 transition">&larr; Anterior</button>
+                        <button id="next-step" class="px-5 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition">Próximo &rarr;</button>
+                        <button id="restart-sim" class="px-5 py-2 bg-purple-500 text-white rounded-md shadow hover:bg-purple-600 transition">Reiniciar</button>
+                    </div>
+                    
+                    <!-- Detalhes dos Passos -->
+                    <div id="pathway-details" class="mt-6 p-6 bg-blue-50/50 border-l-4 border-blue-300 rounded-lg hidden">
+                        <p id="detail1-1" class="step-detail"><b>Detalhe do Passo 1:</b> Uma proteína <b class="highlight-blue">anormal ou viral</b>, presente no citoplasma, é marcada com <i class="italic">ubiquitina</i> para ser destruída.</p>
+                        <p id="detail1-2" class="step-detail hidden"><b>Detalhe do Passo 2:</b> O <b class="font-bold-sky">proteassoma</b>, o "triturador de lixo" da célula, degrada a proteína marcada em pequenos peptídeos.</p>
+                        <p id="detail1-3" class="step-detail hidden"><b>Detalhe do Passo 3:</b> Os peptídeos são transportados para dentro do Retículo Endoplasmático pela proteína <b class="font-bold-sky has-tooltip relative">TAP<span class="custom-tooltip">Transporter associated with Antigen Processing</span></b>. Lá, eles se ligam à fenda da molécula de <b class="highlight-blue">MHC Classe I</b>.</p>
+                        <p id="detail1-4" class="step-detail hidden"><b>Detalhe do Passo 4:</b> O complexo estável MHC I-peptídeo é transportado para a superfície da célula, onde "mostra" o antígeno para os <b class="font-bold-sky">linfócitos T CD8+</b>. Se reconhecido, a célula infectada é destruída.</p>
+                        <p id="detail2-1" class="step-detail hidden"><b>Detalhe do Passo 1:</b> Uma <b class="font-bold-sky">Célula Apresentadora de Antígenos (APC)</b> engloba um patógeno <b class="highlight-green">extracelular</b> (ex: bactéria) por fagocitose.</p>
+                        <p id="detail2-2" class="step-detail hidden"><b>Detalhe do Passo 2:</b> Dentro da célula, o patógeno é degradado em peptídeos no interior do <b class="font-bold-sky">fagolisossomo</b>.</p>
+                        <p id="detail2-3" class="step-detail hidden"><b>Detalhe do Passo 3:</b> A molécula de <b class="highlight-green">MHC Classe II</b>, que estava com sua fenda bloqueada pelo peptídeo <b class="font-bold-sky has-tooltip relative">CLIP<span class="custom-tooltip">Class II-associated Invariant chain Peptide</span></b>, encontra os peptídeos do patógeno. A molécula <i class="italic">HLA-DM</i> catalisa a troca do CLIP pelo peptídeo antigênico.</p>
+                        <p id="detail2-4" class="step-detail hidden"><b>Detalhe do Passo 4:</b> O complexo MHC II-peptídeo é transportado para a superfície da APC para "mostrar" o antígeno aos <b class="font-bold-sky">linfócitos T CD4+</b>, que então orquestram a resposta imune.</p>
+                    </div>
+                 </div>
+            </section>
+
+            <!-- Seção Apresentação Cruzada -->
+            <section id="cruzada" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Apresentação Cruzada: A Exceção Inteligente</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">A <b class="font-bold-sky">apresentação cruzada</b> é um mecanismo especializado onde <b class="highlight-green">Células Dendríticas</b> apresentam antígenos <b class="highlight-blue">exógenos</b> através de moléculas de <b class="highlight-blue">MHC Classe I</b>, permitindo a ativação de <b class="font-bold-sky">linfócitos T CD8+</b> contra patógenos extracelulares. Este é um mecanismo crucial para iniciar respostas imunes contra vírus e tumores.</p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-2xl border border-slate-100 mb-8">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-purple-600">Mecanismo de Apresentação Cruzada</h3>
+                    <div class="relative w-full h-64 bg-slate-100 rounded-lg border-2 border-slate-300 flex items-center justify-center">
+                        <div class="absolute w-32 h-32 bg-yellow-100 rounded-full border-2 border-yellow-300 flex items-center justify-center has-tooltip relative">
+                            <span class="font-bold text-yellow-700">Célula Dendrítica</span>
+                            <span class="custom-tooltip">Célula apresentadora profissional especializada em capturar, processar e apresentar antígenos para ativar linfócitos T</span>
+                        </div>
+                        
+                        <!-- Antígeno externo -->
+                        <div class="absolute top-4 left-1/4 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs has-tooltip relative">
+                            Ag
+                            <span class="custom-tooltip">Antígeno exógeno: Proteína derivada de patógeno extracelular ou célula apoptótica</span>
+                        </div>
+                        
+                        <!-- Setas do processo -->
+                        <div class="absolute top-12 left-1/3 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-12 border-l-green-400"></div>
+                        
+                        <!-- Fagossomo -->
+                        <div class="absolute top-8 left-1/2 w-12 h-12 bg-orange-200 rounded-full border-2 border-orange-400 flex items-center justify-center text-xs has-tooltip relative">
+                            Fagossomo
+                            <span class="custom-tooltip">Vesícula formada pela internalização do antígeno por fagocitose</span>
+                        </div>
+                        
+                        <!-- Setas para o citosol -->
+                        <div class="absolute top-20 left-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-12 border-t-orange-400"></div>
+                        
+                        <!-- Peptídeo no citosol -->
+                        <div class="absolute top-32 left-1/2 w-4 h-4 bg-red-500 rounded-full has-tooltip relative">
+                            <span class="custom-tooltip">Peptídeo derivado do antígeno exógeno que escapou para o citosol</span>
+                        </div>
+                        
+                        <!-- Setas para o RE -->
+                        <div class="absolute top-36 left-2/3 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-12 border-l-red-400"></div>
+                        
+                        <!-- MHC I com peptídeo -->
+                        <div class="absolute top-32 left-3/4 w-10 h-6 bg-blue-500 rounded flex items-center justify-center has-tooltip relative">
+                            <div class="w-6 h-2 bg-red-500 rounded"></div>
+                            <span class="custom-tooltip">Complexo MHC I - peptídeo: O peptídeo exógeno é apresentado via MHC I</span>
+                        </div>
+                        
+                        <!-- Setas para superfície -->
+                        <div class="absolute top-20 left-3/4 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-12 border-t-blue-400"></div>
+                        
+                        <!-- MHC I na superfície -->
+                        <div class="absolute top-8 right-1/4 w-10 h-6 bg-blue-500 rounded flex items-center justify-center border-2 border-slate-800 has-tooltip relative">
+                            <div class="w-6 h-2 bg-red-500 rounded"></div>
+                            <span class="custom-tooltip">MHC I com peptídeo exógeno na superfície celular, pronto para ativar linfócitos T CD8+</span>
+                        </div>
+                        
+                        <!-- Linfócito T CD8+ -->
+                        <div class="absolute top-4 right-1/6 w-12 h-12 bg-blue-200 rounded-full border-2 border-blue-400 flex items-center justify-center text-xs text-center has-tooltip relative">
+                            T CD8+
+                            <span class="custom-tooltip">Linfócito T citotóxico ativado pelo complexo MHC I - peptídeo exógeno</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-slate-700">
+                        <p class="mb-2">A apresentação cruzada permite que <b class="font-bold-sky">células dendríticas</b> ativem linfócitos T CD8+ contra patógenos que não infectam diretamente essas células, uma estratégia crucial para imunidade contra tumores e alguns vírus.</p>
+                        <p>Este processo é particularmente importante para a <b class="highlight-purple">imunidade antitumoral</b> e para respostas contra vírus que não infectam células dendríticas.</p>
+                    </div>
+                </div>
+                
+                <!-- Vias de Apresentação Cruzada -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Vias de Apresentação Cruzada</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-4 border-2 border-slate-200 rounded-lg has-tooltip relative">
+                            <h4 class="font-bold text-blue-600 mb-2">Via Fagocítica</h4>
+                            <p>Antígenos são internalizados por fagocitose, escapam para o citosol e seguem a via endógena clássica.</p>
+                            <span class="custom-tooltip">Antígenos particulados, como bactérias mortas ou complexos imunes, são internalizados e processados por esta via</span>
+                        </div>
+                        <div class="p-4 border-2 border-slate-200 rounded-lg has-tooltip relative">
+                            <h4 class="font-bold text-green-600 mb-2">Via Endocítica</h4>
+                            <p>Antígenos solúveis são internalizados por endocitose, processados em endossomos e carregados em MHC I reciclado.</p>
+                            <span class="custom-tooltip">Antígenos solúveis, como toxinas ou proteínas virais, seguem esta via de apresentação cruzada</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Genética -->
+            <section id="genetica" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Genética do HLA: Herança em Bloco</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">Os genes HLA estão localizados em uma região densa no <b class="font-bold-sky">cromossomo 6</b>. Essa proximidade faz com que sejam herdados em conjunto, como um bloco único chamado <b class="underline-dotted-sky">haplótipo</b>. Cada indivíduo herda um haplótipo do pai e um da mãe.</p>
+                
+                <!-- Mapa do Locus HLA -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-12 gradient-border">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Mapa do Locus HLA no Cromossomo 6</h3>
+                    <div class="bg-gray-200 rounded-full p-2 flex items-center justify-between shadow-inner">
+                        <div class="has-tooltip relative gene-locus bg-gradient-to-br from-green-400 to-teal-500 text-white font-bold p-4 rounded-lg text-center w-1/3 cursor-pointer">
+                            <span>CLASSE II</span>
+                            <div class="custom-tooltip">Genes HLA de Classe II: DP, DQ, DR. Codificam moléculas que apresentam antígenos exógenos a linfócitos T CD4+.</div>
+                        </div>
+                        <div class="has-tooltip relative gene-locus bg-gradient-to-br from-yellow-400 to-amber-500 text-white font-bold p-4 rounded-lg text-center w-1/3 cursor-pointer mx-2">
+                            <span>CLASSE III</span>
+                            <div class="custom-tooltip">Genes HLA de Classe III: Codificam componentes do sistema complemento (C2, C4, fator B) e citocinas (TNF).</div>
+                        </div>
+                        <div class="has-tooltip relative gene-locus bg-gradient-to-br from-blue-400 to-indigo-500 text-white font-bold p-4 rounded-lg text-center w-1/3 cursor-pointer">
+                            <span>CLASSE I</span>
+                            <div class="custom-tooltip">Genes HLA de Classe I: A, B, C. Codificam moléculas que apresentam antígenos endógenos a linfócitos T CD8+.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Herança de Haplótipos -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-12">
+                    <h3 class="text-xl font-bold text-center mb-6 text-slate-700">Herança de Haplótipos</h3>
+                    <div id="haplotype-diagram" class="flex flex-col items-center">
+                        <div class="flex space-x-12 mb-4">
+                            <div class="text-center">
+                                <p class="font-bold">Pai</p>
+                                <div class="flex space-x-2 mt-2">
+                                    <div class="haplotype-parent w-4 h-16 bg-blue-500 rounded cursor-pointer has-tooltip relative" data-parent="p1">
+                                        <span class="custom-tooltip">Haplótipo paterno 1: Conjunto de alelos HLA herdados de um dos cromossomos do pai</span>
+                                    </div>
+                                    <div class="haplotype-parent w-4 h-16 bg-sky-500 rounded cursor-pointer has-tooltip relative" data-parent="p2">
+                                        <span class="custom-tooltip">Haplótipo paterno 2: Conjunto de alelos HLA herdados do outro cromossomo do pai</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-bold">Mãe</p>
+                                <div class="flex space-x-2 mt-2">
+                                    <div class="haplotype-parent w-4 h-16 bg-pink-500 rounded cursor-pointer has-tooltip relative" data-parent="m1">
+                                        <span class="custom-tooltip">Haplótipo materno 1: Conjunto de alelos HLA herdados de um dos cromossomos da mãe</span>
+                                    </div>
+                                    <div class="haplotype-parent w-4 h-16 bg-red-500 rounded cursor-pointer has-tooltip relative" data-parent="m2">
+                                        <span class="custom-tooltip">Haplótipo materno 2: Conjunto de alelos HLA herdados do outro cromossomo da mãe</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-5xl font-thin text-slate-400">&darr;</div>
+                        <div class="text-center mt-4">
+                            <p class="font-bold">Filho</p>
+                            <div class="flex space-x-2 mt-2 border-4 border-slate-200 p-2 rounded-lg">
+                                 <div id="child-h1" class="haplotype-child w-4 h-16 bg-slate-300 rounded transition-colors duration-500 has-tooltip relative" data-origin="p1 p2">
+                                    <span class="custom-tooltip">Haplótipo herdado do pai: Conjunto completo de alelos HLA de um dos cromossomos paternos</span>
+                                 </div>
+                                 <div id="child-h2" class="haplotype-child w-4 h-16 bg-slate-300 rounded transition-colors duration-500 has-tooltip relative" data-origin="m1 m2">
+                                    <span class="custom-tooltip">Haplótipo herdado da mãe: Conjunto completo de alelos HLA de um dos cromossomos maternos</span>
+                                 </div>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2">Recebeu um haplótipo de cada genitor</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Diagrama de Desequilíbrio de Ligação -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Desequilíbrio de Ligação</h3>
+                    <p class="mb-4 text-slate-600">O <b class="font-bold-sky">desequilíbrio de ligação</b> ocorre quando certos alelos de genes diferentes são herdados juntos com mais frequência do que seria esperado ao acaso. No sistema HLA, isso resulta em <b class="underline-dotted-sky">haplótipos comuns</b> na população.</p>
+                    <div class="relative w-full h-48 bg-slate-100 rounded-lg border-2 border-slate-300 flex items-center justify-center">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 w-32 h-32 bg-blue-100 rounded-full border-2 border-blue-300 flex items-center justify-center has-tooltip relative">
+                            <span class="font-bold text-blue-700">HLA-A</span>
+                            <span class="custom-tooltip">Locus HLA-A: Um dos principais loci de Classe I, altamente polimórfico</span>
+                        </div>
+                        <div class="absolute left-1/3 top-1/2 -translate-y-1/2 w-32 h-32 bg-green-100 rounded-full border-2 border-green-300 flex items-center justify-center has-tooltip relative">
+                            <span class="font-bold text-green-700">HLA-B</span>
+                            <span class="custom-tooltip">Locus HLA-B: Locus de Classe I com maior polimorfismo, importante para transplantes</span>
+                        </div>
+                        <div class="absolute left-2/3 top-1/2 -translate-y-1/2 w-32 h-32 bg-purple-100 rounded-full border-2 border-purple-300 flex items-center justify-center has-tooltip relative">
+                            <span class="font-bold text-purple-700">HLA-DR</span>
+                            <span class="custom-tooltip">Locus HLA-DR: Principal locus de Classe II, associado a várias doenças autoimunes</span>
+                        </div>
+                        
+                        <!-- Setas de ligação -->
+                        <div class="absolute left-28 top-1/2 -translate-y-1/2 w-16 h-1 bg-blue-400"></div>
+                        <div class="absolute left-1/2 top-1/2 -translate-y-1/2 w-16 h-1 bg-green-400"></div>
+                        
+                        <!-- Blocos de desequilíbrio -->
+                        <div class="ld-block absolute left-20 top-1/2 -translate-y-1/2 w-24 h-10 bg-blue-300/50 rounded-lg flex items-center justify-center text-xs font-bold has-tooltip relative">
+                            A1-B8
+                            <span class="custom-tooltip">Haplótipo A1-B8: Um dos haplótipos mais comuns em populações caucasianas, associado a várias doenças autoimunes</span>
+                        </div>
+                        <div class="ld-block absolute left-1/2 top-1/2 -translate-y-1/2 w-24 h-10 bg-green-300/50 rounded-lg flex items-center justify-center text-xs font-bold -translate-x-1/2 has-tooltip relative">
+                            B27-DR1
+                            <span class="custom-tooltip">Haplótipo B27-DR1: Fortemente associado à espondilite anquilosante</span>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-slate-600">Estes haplótipos comuns explicam por que certas combinações de alelos HLA estão associadas a doenças específicas em diferentes populações.</p>
+                </div>
+            </section>
+
+            <!-- Seção Transplantes -->
+            <section id="transplantes" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Transplantes e Compatibilidade HLA</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">O sistema HLA é crucial para o sucesso de transplantes de órgãos e tecidos. Quanto maior a compatibilidade entre doador e receptor, menor o risco de <b class="font-bold-sky">rejeição</b>. Entender os princípios da histocompatibilidade é fundamental para a medicina de transplantes.</p>
+                
+                <!-- Tipos de Transplantes -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Tipos de Transplantes</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="transplant-scenario p-4 border-2 border-slate-200 rounded-lg text-center has-tooltip relative">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user-friends text-blue-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-blue-600 mb-2">Aloenxerto</h4>
+                            <p class="text-sm">Transplante entre indivíduos geneticamente diferentes da mesma espécie.</p>
+                            <span class="custom-tooltip">A maioria dos transplantes de órgãos sólidos são aloenxertos. Requer compatibilidade HLA para evitar rejeição.</span>
+                        </div>
+                        <div class="transplant-scenario p-4 border-2 border-slate-200 rounded-lg text-center has-tooltip relative">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-dna text-green-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-green-600 mb-2">Isotransplante</h4>
+                            <p class="text-sm">Transplante entre gêmeos idênticos (geneticamente idênticos).</p>
+                            <span class="custom-tooltip">Não há risco de rejeição imunológica pois doador e receptor compartilham os mesmos antígenos HLA.</span>
+                        </div>
+                        <div class="transplant-scenario p-4 border-2 border-slate-200 rounded-lg text-center has-tooltip relative">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user text-purple-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-purple-600 mb-2">Autotransplante</h4>
+                            <p class="text-sm">Transplante do próprio tecido de um local para outro no mesmo indivíduo.</p>
+                            <span class="custom-tooltip">Exemplo: enxerto de pele. Não há risco de rejeição pois o tecido é geneticamente idêntico.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mecanismos de Rejeição -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Mecanismos de Rejeição de Transplantes</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-4 border-2 border-red-200 rounded-lg has-tooltip relative">
+                            <h4 class="font-bold text-red-600 mb-2">Rejeição Hiperaguda</h4>
+                            <p>Ocorre minutos a horas após o transplante. Causada por anticorpos pré-formados contra antígenos do doador.</p>
+                            <span class="custom-tooltip">Mediada por anticorpos que ativam o sistema complemento, levando a trombose e necrose do enxerto</span>
+                        </div>
+                        <div class="p-4 border-2 border-orange-200 rounded-lg has-tooltip relative">
+                            <h4 class="font-bold text-orange-600 mb-2">Rejeição Aguda</h4>
+                            <p>Ocorre dias a semanas após o transplante. Mediada por linfócitos T que reconhecem aloantígenos do doador.</p>
+                            <span class="custom-tooltip">As células T do receptor reconhecem antígenos HLA do doador como estranhos e atacam o enxerto</span>
+                        </div>
+                        <div class="p-4 border-2 border-yellow-200 rounded-lg has-tooltip relative">
+                            <h4 class="font-bold text-yellow-600 mb-2">Rejeição Crônica</h4>
+                            <p>Desenvolve-se meses a anos após o transplante. Caracterizada por fibrose e estreitamento vascular progressivo.</p>
+                            <span class="custom-tooltip">Resulta de respostas imunes e não-imunes que levam à perda gradual da função do enxerto</span>
+                        </div>
+                        <div class="p-4 border-2 border-blue-200 rounded-lg has-tooltip relative">
+                            <h4 class="font-bold text-blue-600 mb-2">Doença do Enxerto contra Hospedeiro</h4>
+                            <p>Ocorre quando células imunes competentes no enxerto reconhecem os tecidos do receptor como estranhos.</p>
+                            <span class="custom-tooltip">Comum em transplantes de medula óssea, onde linfócitos T do doador atacam tecidos do receptor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Compatibilidade HLA em Transplantes -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Importância da Compatibilidade HLA em Transplantes</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-700">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                <tr>
+                                    <th class="px-4 py-3">Órgão/Tecido</th>
+                                    <th class="px-4 py-3">Importância da Compatibilidade HLA</th>
+                                    <th class="px-4 py-3">Loci Mais Relevantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b">
+                                    <td class="px-4 py-3 font-medium">Rim</td>
+                                    <td class="px-4 py-3">Alta - Melhor compatibilidade aumenta sobrevida do enxerto</td>
+                                    <td class="px-4 py-3">HLA-A, HLA-B, HLA-DR</td>
+                                </tr>
+                                <tr class="bg-slate-50 border-b">
+                                    <td class="px-4 py-3 font-medium">Coração</td>
+                                    <td class="px-4 py-3">Moderada a Alta - Importante para evitar rejeição</td>
+                                    <td class="px-4 py-3">HLA-A, HLA-B, HLA-DR</td>
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="px-4 py-3 font-medium">Fígado</td>
+                                    <td class="px-4 py-3">Baixa a Moderada - Órgão mais tolerante imunologicamente</td>
+                                    <td class="px-4 py-3">HLA-DR (menos importante que em outros órgãos)</td>
+                                </tr>
+                                <tr class="bg-slate-50 border-b">
+                                    <td class="px-4 py-3 font-medium">Medula Óssea</td>
+                                    <td class="px-4 py-3">Muito Alta - Crucial para evitar doença do enxerto contra hospedeiro</td>
+                                    <td class="px-4 py-3">HLA-A, HLA-B, HLA-C, HLA-DR, HLA-DQ</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="px-4 py-3 font-medium">Córnea</td>
+                                    <td class="px-4 py-3">Baixa - Tecido avascular com privilégio imunológico</td>
+                                    <td class="px-4 py-3">Compatibilidade HLA geralmente não é testada</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Laboratório -->
+            <section id="laboratorio" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Laboratório: Técnicas de Tipagem HLA</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">A tipagem HLA é fundamental para transplantes, estudos de doenças e antropologia populacional. Diversas técnicas laboratoriais são utilizadas para determinar os alelos HLA de um indivíduo.</p>
+                
+                <!-- Técnicas de Tipagem HLA -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Técnicas de Tipagem HLA</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="lab-equipment p-4 border-2 border-slate-200 rounded-lg has-tooltip relative">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-vial text-blue-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-blue-600 mb-2">Sorologia</h4>
+                            <p class="text-sm">Utiliza anticorpos específicos para detectar antígenos HLA na superfície de linfócitos.</p>
+                            <span class="custom-tooltip">Método tradicional que usa soro contendo anticorpos anti-HLA para identificar antígenos em linfócitos</span>
+                        </div>
+                        <div class="lab-equipment p-4 border-2 border-slate-200 rounded-lg has-tooltip relative">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-dna text-green-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-green-600 mb-2">PCR-SSO</h4>
+                            <p class="text-sm">Amplificação por PCR seguida de hibridização com oligonucleotídeos específicos.</p>
+                            <span class="custom-tooltip">Técnica molecular que amplifica regiões do gene HLA e hibridiza com sondas específicas para identificar alelos</span>
+                        </div>
+                        <div class="lab-equipment p-4 border-2 border-slate-200 rounded-lg has-tooltip relative">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-code text-purple-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-purple-600 mb-2">Sequenciamento</h4>
+                            <p class="text-sm">Determinação direta da sequência nucleotídica dos genes HLA.</p>
+                            <span class="custom-tooltip">Método de alta resolução que determina a sequência exata de nucleotídeos dos genes HLA</span>
+                        </div>
+                        <div class="lab-equipment p-4 border-2 border-slate-200 rounded-lg has-tooltip relative">
+                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-microscope text-red-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-red-600 mb-2">Citometria de Fluxo</h4>
+                            <p class="text-sm">Detecção de antígenos HLA usando anticorpos marcados com fluorocromos.</p>
+                            <span class="custom-tooltip">Técnica que utiliza anticorpos fluorescentes para detectar e quantificar antígenos HLA na superfície celular</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Microscópio Virtual -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-4 text-slate-700">Microscópio Virtual: Teste de Crossmatch</h3>
+                    <div class="lab-microscope relative w-full h-64 bg-slate-900 rounded-lg border-2 border-slate-700 mx-auto">
+                        <div class="lab-slide active absolute w-full h-full flex items-center justify-center">
+                            <div class="text-white text-center">
+                                <i class="fas fa-circle text-green-500 text-4xl mb-2 bounce"></i>
+                                <p>Linfócitos do doador + Soro do receptor</p>
+                                <p class="text-sm mt-2">Teste de crossmatch negativo: Não há reação</p>
+                            </div>
+                        </div>
+                        <div class="lab-slide absolute w-full h-full flex items-center justify-center">
+                            <div class="text-white text-center">
+                                <i class="fas fa-circle text-red-500 text-4xl mb-2"></i>
+                                <p>Linfócitos do doador + Soro do receptor</p>
+                                <p class="text-sm mt-2">Teste de crossmatch positivo: Células marcadas com fluorescência</p>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4">
+                            <button class="px-3 py-1 bg-blue-500 text-white rounded text-sm" id="prev-slide">Anterior</button>
+                            <button class="px-3 py-1 bg-blue-500 text-white rounded text-sm" id="next-slide">Próximo</button>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-slate-600 text-center">O teste de crossmatch verifica se o receptor possui anticorpos contra antígenos do doador, o que poderia causar rejeição hiperaguda.</p>
+                </div>
+            </section>
+
+            <!-- Seção Relevância Clínica -->
+            <section id="clinica" class="mb-20 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Relevância Clínica</h2>
+                <p class="mb-8 text-lg text-slate-600 leading-relaxed">O sistema HLA é um pilar da medicina moderna, influenciando o <b class="highlight-blue">sucesso de transplantes</b> e a <b class="highlight-green">suscetibilidade a doenças</b>. A <b class="font-bold-sky">tipagem HLA</b> é um exame laboratorial crucial em diversas especialidades.</p>
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-xl">
+                        <h3 class="font-bold text-xl text-blue-700 mb-2">Transplantes</h3>
+                        <p>O sucesso de um <b class="underline-dotted-sky">aloenxerto</b> depende da compatibilidade HLA. Quanto maior o <i class="italic">"match"</i> entre doador e receptor, menor a chance de <b class="font-bold-sky">rejeição</b>, onde o sistema imune do receptor ataca o órgão transplantado.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-xl">
+                        <h3 class="font-bold text-xl text-green-700 mb-2">Doenças Autoimunes</h3>
+                        <p>Certas variantes HLA apresentam <b class="font-bold-sky">autoantígenos</b> com alta afinidade, quebrando a <b class="underline-dotted-sky">autotolerância</b> e predispondo a doenças. Passe o mouse para ver as associações.</p>
+                    </div>
+                </div>
+                
+                <!-- Associação Doença-Allelo -->
+                <div id="disease-association" class="bg-white p-6 rounded-xl shadow-lg">
+                     <div class="flex flex-wrap justify-center gap-4 mb-6">
+                        <div class="allele-box p-3 bg-slate-200 rounded-md font-mono transition-all has-tooltip relative" data-disease="b27">
+                            HLA-B27
+                            <span class="custom-tooltip">Alelo HLA-B27: Fortemente associado à espondilite anquilosante e outras espondiloartropatias</span>
+                        </div>
+                        <div class="allele-box p-3 bg-slate-200 rounded-md font-mono transition-all has-tooltip relative" data-disease="dr34">
+                            HLA-DR3/DR4
+                            <span class="custom-tooltip">Alelos HLA-DR3 e HLA-DR4: Associados ao diabetes mellitus tipo 1</span>
+                        </div>
+                        <div class="allele-box p-3 bg-slate-200 rounded-md font-mono transition-all has-tooltip relative" data-disease="dq28">
+                            HLA-DQ2/DQ8
+                            <span class="custom-tooltip">Alelos HLA-DQ2 e HLA-DQ8: Fortemente associados à doença celíaca</span>
+                        </div>
+                        <div class="allele-box p-3 bg-slate-200 rounded-md font-mono transition-all has-tooltip relative" data-disease="dr15">
+                            HLA-DR15
+                            <span class="custom-tooltip">Alelo HLA-DR15: Associado à narcolepsia e esclerose múltipla</span>
+                        </div>
+                     </div>
+                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                         <div class="disease-box p-4 border-2 border-slate-200 rounded-lg transition-all has-tooltip relative" data-allele="b27">
+                            <h4 class="font-semibold">Espondilite Anquilosante</h4>
+                            <p class="text-sm text-slate-600 mt-2">Risco aumentado em portadores de HLA-B27</p>
+                            <span class="custom-tooltip">Doença inflamatória que afeta principalmente as articulações da coluna vertebral. Mais de 90% dos pacientes são HLA-B27 positivos.</span>
+                         </div>
+                         <div class="disease-box p-4 border-2 border-slate-200 rounded-lg transition-all has-tooltip relative" data-allele="dr34">
+                            <h4 class="font-semibold">Diabetes Mellitus Tipo 1</h4>
+                            <p class="text-sm text-slate-600 mt-2">Associado a HLA-DR3 e HLA-DR4</p>
+                            <span class="custom-tooltip">Doença autoimune que destrói as células beta do pâncreas. Indivíduos com HLA-DR3/DR4 têm risco 20 vezes maior.</span>
+                         </div>
+                         <div class="disease-box p-4 border-2 border-slate-200 rounded-lg transition-all has-tooltip relative" data-allele="dq28">
+                            <h4 class="font-semibold">Doença Celíaca</h4>
+                            <p class="text-sm text-slate-600 mt-2">Fortemente associada a HLA-DQ2 e HLA-DQ8</p>
+                            <span class="custom-tooltip">Doença autoimune desencadeada pela ingestão de glúten. Quase todos os pacientes possuem HLA-DQ2 ou HLA-DQ8.</span>
+                         </div>
+                         <div class="disease-box p-4 border-2 border-slate-200 rounded-lg transition-all has-tooltip relative" data-allele="dr15">
+                            <h4 class="font-semibold">Esclerose Múltipla</h4>
+                            <p class="text-sm text-slate-600 mt-2">Associada a HLA-DR15</p>
+                            <span class="custom-tooltip">Doença desmielinizante do sistema nervoso central. HLA-DR15 aumenta o risco em 3 vezes.</span>
+                         </div>
+                     </div>
+                </div>
+            </section>
+
+            <!-- Seção Memorização -->
+            <section id="memoria" class="fade-in-section">
+                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800 border-l-4 border-blue-500 pl-4 mb-6">Arsenal de Memorização</h2>
+                 <p class="mb-8 text-lg text-slate-600 leading-relaxed">Utilize este arsenal de mnemônicos e associações para solidificar seu conhecimento. Clique em cada tópico para expandir.</p>
+                 <div class="space-y-4">
+                    <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
+                        <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
+                            <div class="flex items-center"><i class="fas fa-calculator mr-3 text-blue-500"></i>Regras Fundamentais</div>
+                            <span class="transform transition-transform">&#9660;</span>
+                        </button>
+                        <div class="accordion-body p-5 border-t border-slate-200">
+                           <h4 class="font-bold text-blue-600 mb-2">A Regra do 8</h4>
+                           <p class="text-slate-600">A interação entre o MHC e o Linfócito T sempre segue uma matemática simples: o produto dos números deve ser 8.</p>
+                           <ul class="list-disc list-inside mt-2 space-y-1">
+                               <li>MHC Classe <b class="text-blue-600">I</b> x Linfócito T CD<b class="text-blue-600">8</b>+ (1 x 8 = 8)</li>
+                               <li>MHC Classe <b class="text-green-600">II</b> x Linfócito T CD<b class="text-green-600">4</b>+ (2 x 4 = 8)</li>
+                           </ul>
+                           <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-white p-4 rounded-lg shadow-xl border-t-4 border-blue-400">
+                                    <h3 class="font-bold text-lg text-blue-700 mb-2">Genes da Classe I</h3>
+                                    <p>Para a Classe I, lembre-se do <b>"Bolo de Aniversário de Cereja"</b>.</p>
+                                    <p class="font-bold text-xl mt-2">B - A - C</p>
+                                    <p>(HLA-<b>B</b>, HLA-<b>A</b>, HLA-<b>C</b>)</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-xl border-t-4 border-green-400">
+                                    <h3 class="font-bold text-lg text-green-700 mb-2">Genes da Classe II</h3>
+                                    <p>Para a Classe II, imagine um <b>DR</b>agão comendo um <b>D</b>oce de <b>Q</b>uiabo num <b>P</b>iquenique.</p>
+                                    <p class="font-bold text-xl mt-2">DR - DQ - DP</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
+                         <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
+                            <div class="flex items-center"><i class="fas fa-sitemap mr-3 text-green-500"></i>Lógica das Vias e Células</div>
+                            <span class="transform transition-transform">&#9660;</span>
+                        </button>
+                        <div class="accordion-body p-5 border-t border-slate-200">
+                           <h4 class="font-bold text-green-600 mb-2">Origem do Antígeno</h4>
+                           <ul class="list-disc list-inside mt-2 space-y-1">
+                               <li>Classe <b class="text-blue-600">I</b>: Apresenta o que vem de <b class="text-blue-600">I</b>nside (Dentro). Antígenos <b class="text-blue-600">I</b>ntracelulares (endógenos), como vírus e proteínas tumorais.</li>
+                               <li>Classe <b class="text-green-600">II</b>: Apresenta o que vem de fora (<b>E</b>xógeno). Antígenos fagocitados, como bactérias. O "II" parece um "E" de lado.</li>
+                           </ul>
+                           <h4 class="font-bold text-green-600 mt-4 mb-2">Quais Células Apresentam?</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                               <li>Classe <b class="text-blue-600">I</b>: Praticamente <b class="text-blue-600">TODA</b> célula nucleada. Um vírus pode infectar quase qualquer célula, então todas precisam de um sistema de alarme.</li>
+                               <li>Classe <b class="text-green-600">II</b>: Apenas Células Apresentadoras de Antígenos (<b class="text-green-600">APCs</b>) profissionais (Macrófagos, Células Dendríticas, Linfócitos B). Elas são as "sentinelas" do corpo.</li>
+                           </ul>
+                           <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-white p-4 rounded-lg shadow-xl border-t-4 border-sky-400">
+                                    <h3 class="font-bold text-lg text-sky-700 mb-2">Quem tem o quê?</h3>
+                                    <p>Classe <b>1</b> está em <b>1</b> tipo de lugar: <b>quase todas</b> as células.</p>
+                                    <p>Classe <b>2</b> está em um grupo de <b>2</b> letras: <b>AP</b>Cs (Células Apresentadoras).</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-xl border-t-4 border-amber-400">
+                                    <h3 class="font-bold text-lg text-amber-700 mb-2">Estrutura das Classes</h3>
+                                    <p>Classe <b>1</b> tem <b>1</b> cadeia longa e polimórfica (a cadeia alfa).</p>
+                                    <p>Classe <b>2</b> tem <b>2</b> cadeias longas e polimórficas (alfa e beta).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-lg border border-slate-200">
+                         <button class="accordion-header w-full text-left p-5 font-semibold text-lg hover:bg-slate-50 flex justify-between items-center transition-colors">
+                            <div class="flex items-center"><i class="fas fa-stethoscope mr-3 text-purple-500"></i>Associações Clínicas</div>
+                            <span class="transform transition-transform">&#9660;</span>
+                        </button>
+                        <div class="accordion-body p-5 border-t border-slate-200">
+                           <h4 class="font-bold text-purple-600 mb-2">Doenças Autoimunes e HLA</h4>
+                           <ul class="list-disc list-inside mt-2 space-y-1">
+                               <li><b>HLA-B27</b> → Espondilite Anquilosante (pense em "B27" como "Boa sorte com sua coluna vertebral")</li>
+                               <li><b>HLA-DR3/DR4</b> → Diabetes Mellitus Tipo 1 (pense em "DR" como "Diabetes Risk")</li>
+                               <li><b>HLA-DQ2/DQ8</b> → Doença Celíaca (pense em "DQ" como "Don't eat Quinoa" se você tem a doença)</li>
+                               <li><b>HLA-DR15</b> → Esclerose Múltipla (pense em "DR15" como "Doença que afeta o cérebro")</li>
+                           </ul>
+                           <h4 class="font-bold text-purple-600 mt-4 mb-2">Transplantes</h4>
+                           <ul class="list-disc list-inside mt-2 space-y-1">
+                               <li>Quanto mais <b class="text-blue-600">compatibilidade HLA</b> entre doador e receptor, menor o risco de rejeição.</li>
+                               <li>Os loci mais importantes para transplante são <b>HLA-A, HLA-B e HLA-DR</b> (os "ABCs" do transplante).</li>
+                               <li>Para transplante de medula óssea, a compatibilidade deve ser quase perfeita para evitar doença do enxerto contra hospedeiro.</li>
+                           </ul>
+                        </div>
+                    </div>
+                 </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intersection Observer for fade-in animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in-section').forEach(section => observer.observe(section));
+
+            // Accordion functionality
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.parentElement;
+                    const body = header.nextElementSibling;
+                    item.classList.toggle('open');
+                    if (item.classList.contains('open')) {
+                         body.style.maxHeight = body.scrollHeight + "px";
+                    } else {
+                         body.style.maxHeight = "0px";
+                    }
+                });
+            });
+            
+            // MHC Explode functionality
+            document.getElementById('explode-btn').addEventListener('click', () => {
+                document.getElementById('mhc1-container').classList.toggle('exploded');
+                document.getElementById('mhc2-container').classList.toggle('exploded');
+            });
+            
+            // Simulation Logic
+            const simElements = {
+                virus: document.getElementById('sim-virus'),
+                proteasome: document.getElementById('sim-proteasome'),
+                peptide: document.getElementById('sim-peptide'),
+                tap: document.getElementById('sim-tap'),
+                mhc1: document.getElementById('sim-mhc1'),
+                bact: document.getElementById('sim-bact'),
+                mhc2: document.getElementById('sim-mhc2'),
+                vesicle: document.getElementById('sim-vesicle'),
+                clip: document.getElementById('sim-clip')
+            };
+
+            const endoSteps = [
+                { 
+                    desc: "1. Um vírus infecta a célula e suas proteínas são produzidas no citosol.", 
+                    show: ['virus'], 
+                    pos: { virus: { top: '10%', left: '50%' } },
+                    detail: 'detail1-1'
+                },
+                { 
+                    desc: "2. A proteína viral é marcada para destruição e processada pelo proteassoma.", 
+                    show: ['virus', 'proteasome'], 
+                    pos: { virus: { top: '25%', left: '50%'}, proteasome: {top: '25%', left: '50%'} },
+                    detail: 'detail1-2'
+                },
+                { 
+                    desc: "3. O proteassoma cliva a proteína em pequenos peptídeos.", 
+                    show: ['peptide', 'proteasome'], 
+                    pos: { peptide: { top: '35%', left: '50%'} },
+                    detail: 'detail1-2'
+                },
+                { 
+                    desc: "4. Os peptídeos são transportados para o Retículo Endoplasmático (RE) pelo transportador TAP.", 
+                    show: ['peptide', 'tap'], 
+                    pos: { peptide: { top: '40%', left: '20%'}, tap: {top: '40%', left: '17%'} },
+                    detail: 'detail1-3'
+                },
+                { 
+                    desc: "5. No RE, o peptídeo se liga a uma molécula de MHC Classe I recém-sintetizada.", 
+                    show: ['mhc1'], 
+                    pos: { mhc1: {top: '50%', left: '30%'} },
+                    detail: 'detail1-3'
+                },
+                { 
+                    desc: "6. O complexo MHC I-peptídeo é transportado via Golgi para a superfície celular.", 
+                    show: ['vesicle'], 
+                    pos: { vesicle: { top: '50%', left: '80%'} },
+                    detail: 'detail1-4'
+                },
+                { 
+                    desc: "7. O complexo é expresso na membrana, pronto para ser reconhecido por um Linfócito T CD8+.", 
+                    show: ['vesicle'], 
+                    pos: { vesicle: { top: '5%', left: '80%'} },
+                    detail: 'detail1-4'
+                },
+            ];
+
+            const exoSteps = [
+                { 
+                    desc: "1. Uma bactéria é fagocitada por uma APC, formando um fagossomo.", 
+                    show: ['bact'], 
+                    pos: { bact: { top: '50%', left: '10%' } },
+                    detail: 'detail2-1'
+                },
+                { 
+                    desc: "2. O fagossomo se funde com um lisossomo, e a bactéria é digerida em peptídeos.", 
+                    show: ['bact'], 
+                    pos: { bact: { top: '50%', left: '20%'} },
+                    detail: 'detail2-2'
+                },
+                { 
+                    desc: "3. No RE, a molécula de MHC Classe II é sintetizada com uma cadeia invariante (CLIP) bloqueando a fenda.", 
+                    show: ['mhc2', 'clip'], 
+                    pos: { mhc2: {top: '50%', left: '40%'}, clip: {top: '55%', left: '40%'} },
+                    detail: 'detail2-3'
+                },
+                { 
+                    desc: "4. O MHC II é transportado em uma vesícula que se funde com o fagolisossomo.", 
+                    show: ['mhc2'], 
+                    pos: { mhc2: {top: '50%', left: '25%'} },
+                    detail: 'detail2-3'
+                },
+                { 
+                    desc: "5. A molécula HLA-DM remove o CLIP, permitindo que o peptídeo bacteriano se ligue ao MHC II.", 
+                    show: ['mhc2'], 
+                    pos: { mhc2: {top: '50%', left: '25%'} },
+                    detail: 'detail2-3'
+                },
+                { 
+                    desc: "6. O complexo MHC II-peptídeo é transportado para a superfície celular.", 
+                    show: ['mhc2'], 
+                    pos: { mhc2: { top: '5%', left: '50%'} },
+                    detail: 'detail2-4'
+                },
+                { 
+                    desc: "7. O complexo é expresso na membrana, pronto para ser reconhecido por um Linfócito T CD4+.", 
+                    show: ['mhc2'], 
+                    pos: { mhc2: { top: '5%', left: '50%'} },
+                    detail: 'detail2-4'
+                },
+            ];
+            
+            let currentPathway = endoSteps;
+            let currentStep = -1;
+            const stepDesc = document.getElementById('step-description');
+            const pathwayDetails = document.getElementById('pathway-details');
+
+            function resetSimulation() {
+                Object.values(simElements).forEach(el => el.style.opacity = '0');
+                currentStep = -1;
+                pathwayDetails.classList.add('hidden');
+                document.querySelectorAll('.step-detail').forEach(detail => detail.classList.add('hidden'));
+            }
+
+            function runStep(step) {
+                resetSimulation();
+                stepDesc.textContent = step.desc;
+                step.show.forEach(key => {
+                    const el = simElements[key];
+                    el.style.opacity = '1';
+                    if (step.pos && step.pos[key]) {
+                        el.style.top = step.pos[key].top;
+                        el.style.left = step.pos[key].left;
+                    }
+                });
+                
+                // Show step details
+                pathwayDetails.classList.remove('hidden');
+                document.querySelectorAll('.step-detail').forEach(detail => detail.classList.add('hidden'));
+                if (step.detail) {
+                    document.getElementById(step.detail).classList.remove('hidden');
+                }
+            }
+
+            document.getElementById('tab-endo').addEventListener('click', (e) => {
+                currentPathway = endoSteps;
+                resetSimulation();
+                stepDesc.textContent = "Iniciando a simulação da Via Endógena (Classe I)...";
+                document.getElementById('tab-endo').classList.add('active');
+                document.getElementById('tab-exo').classList.remove('active');
+            });
+
+            document.getElementById('tab-exo').addEventListener('click', (e) => {
+                currentPathway = exoSteps;
+                resetSimulation();
+                stepDesc.textContent = "Iniciando a simulação da Via Exógena (Classe II)...";
+                document.getElementById('tab-exo').classList.add('active');
+                document.getElementById('tab-endo').classList.remove('active');
+            });
+            
+            document.getElementById('next-step').addEventListener('click', () => {
+                if (currentStep < currentPathway.length - 1) {
+                    currentStep++;
+                    runStep(currentPathway[currentStep]);
+                }
+            });
+
+            document.getElementById('prev-step').addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    runStep(currentPathway[currentStep]);
+                }
+            });
+
+            document.getElementById('restart-sim').addEventListener('click', () => {
+                resetSimulation();
+                stepDesc.textContent = "Simulação reiniciada. Selecione um passo para começar.";
+            });
+
+            // Haplotype inheritance interaction
+            const parentHaplos = document.querySelectorAll('.haplotype-parent');
+            const childHaplos = {
+                h1: document.getElementById('child-h1'),
+                h2: document.getElementById('child-h2')
+            };
+            parentHaplos.forEach(ph => {
+                ph.addEventListener('mouseenter', () => {
+                    const parentId = ph.dataset.parent;
+                    if (parentId.startsWith('p')) {
+                        childHaplos.h1.style.backgroundColor = ph.style.backgroundColor;
+                    } else if (parentId.startsWith('m')) {
+                        childHaplos.h2.style.backgroundColor = ph.style.backgroundColor;
+                    }
+                });
+                ph.addEventListener('mouseleave', () => {
+                     childHaplos.h1.style.backgroundColor = '';
+                     childHaplos.h2.style.backgroundColor = '';
+                });
+            });
+            
+            // Disease association interaction
+            const diseaseBoxes = document.querySelectorAll('.disease-box');
+            const alleleBoxes = document.querySelectorAll('.allele-box');
+
+            function highlightAssociation(allele) {
+                alleleBoxes.forEach(ab => {
+                    if (ab.dataset.disease === allele) {
+                        ab.classList.add('bg-green-400', 'text-white', 'scale-110');
+                    } else {
+                        ab.classList.remove('bg-green-400', 'text-white', 'scale-110');
+                    }
+                });
+            }
+            
+            diseaseBoxes.forEach(db => {
+                db.addEventListener('mouseenter', () => {
+                    const allele = db.dataset.allele;
+                    db.classList.add('bg-green-100', 'border-green-400');
+                    highlightAssociation(allele);
+                });
+                 db.addEventListener('mouseleave', () => {
+                    db.classList.remove('bg-green-100', 'border-green-400');
+                    alleleBoxes.forEach(ab => ab.classList.remove('bg-green-400', 'text-white', 'scale-110'));
+                });
+            });
+            
+            // Add interaction for allele boxes too
+            alleleBoxes.forEach(ab => {
+                ab.addEventListener('mouseenter', () => {
+                    const disease = ab.dataset.disease;
+                    highlightAssociation(disease);
+                    diseaseBoxes.forEach(db => {
+                        if (db.dataset.allele === disease) {
+                            db.classList.add('bg-green-100', 'border-green-400');
+                        }
+                    });
+                });
+                ab.addEventListener('mouseleave', () => {
+                    alleleBoxes.forEach(ab => ab.classList.remove('bg-green-400', 'text-white', 'scale-110'));
+                    diseaseBoxes.forEach(db => db.classList.remove('bg-green-100', 'border-green-400'));
+                });
+            });
+
+            // Microscope slides functionality
+            const slides = document.querySelectorAll('.lab-slide');
+            let currentSlide = 0;
+            
+            document.getElementById('next-slide').addEventListener('click', () => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            });
+            
+            document.getElementById('prev-slide').addEventListener('click', () => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                slides[currentSlide].classList.add('active');
+            });
+
+            // Popup functionality
+            const popupOverlay = document.getElementById('popup-overlay');
+            const popupBody = document.getElementById('popup-body');
+            const closePopup = document.getElementById('close-popup');
+            
+            closePopup.addEventListener('click', () => {
+                popupOverlay.classList.remove('active');
+            });
+            
+            popupOverlay.addEventListener('click', (e) => {
+                if (e.target === popupOverlay) {
+                    popupOverlay.classList.remove('active');
+                }
+            });
+
+            // Example of opening a popup (you can add more as needed)
+            document.querySelectorAll('.has-tooltip').forEach(element => {
+                element.addEventListener('click', (e) => {
+                    const tooltip = element.querySelector('.custom-tooltip');
+                    if (tooltip) {
+                        popupBody.innerHTML = `
+                            <h3 class="text-xl font-bold mb-4">${element.textContent.trim()}</h3>
+                            <p>${tooltip.textContent}</p>
+                        `;
+                        popupOverlay.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
